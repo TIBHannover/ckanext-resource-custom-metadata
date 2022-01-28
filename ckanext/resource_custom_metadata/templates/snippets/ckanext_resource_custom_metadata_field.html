@@ -1,0 +1,26 @@
+{% for res in resources %}
+    <div class="{{box_class}}" id="{{box_id ~ loop.index}}">
+        <div class="col-sm-6">
+            {{ form.input(input_name ~ loop.index, 
+                id=input_name ~ loop.index, 
+                label = input_label,
+                type='text',
+                classes=['control-full'], attrs={'class': 'custom-resource-metadata-input'}, is_required=False) 
+            }} 
+        </div>
+        <div class="col-sm-4">
+            {% snippet 'snippets/ckanext_resource_custom_metadata_modal.html', 
+                metadata_field_name=input_name,
+                metadata_field_title=input_label,
+                counter_id=loop.index,
+                resources=resources
+            %}
+        </div>
+        <div class="col-sm-2">
+            <a href="#" class="box-remove-anchor" id={{ 'material_comb_box_remove_' ~ loop.index}}>
+                <i class="fa fa-minus-circle remove-metadata-icon"></i>
+            </a>
+        </div>
+    </div>
+{% endfor %}
+<button type="button" class="btn btn-primary" id={{add_new_button_id}}>+ {{add_new_button_text}}</button>

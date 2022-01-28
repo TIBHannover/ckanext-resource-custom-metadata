@@ -31,32 +31,18 @@
 
   <form id="ownership-form" class="" method="post" action='{{action}}' data-module="basic-form" enctype="multipart/form-data">
     
-    {% for res in pkg_dict['resources'] %}
-        <div class="row material-comb-box" id= {{'material_comb_box_' ~ loop.index}}>
-            <div class="col-sm-6">
-                {{ input_object.input('material_combination_' ~ loop.index, 
-                    id='material_combination_' ~ loop.index, 
-                    label = "Material Combination",
-                    type='text',
-                    classes=['control-full'], attrs={'class': 'custom-resource-metadata-input'}, is_required=False) 
-                }} 
-            </div>
-            <div class="col-sm-4">
-                {% snippet 'snippets/ckanext_resource_custom_metadata_modal.html', 
-                    metadata_field_name='material_combination',
-                    metadata_field_title='Material Combination',
-                    counter_id=loop.index,
-                    resources=pkg_dict['resources']
-                %}
-            </div>
-            <div class="col-sm-2">
-                <a href="#" class="material-comb-box-remove-anchor" id={{ '"material_comb_box_' ~ loop.index}}>
-                    <i class="fa fa-minus-circle remove-metadata-icon"></i>
-                </a>
-            </div>
-        </div>
-    {% endfor %}
-    <button type="button" class="btn btn-primary new-material-combination" id='mat_comb'>+ {{_('New Material Combination')}}</button>
+    {# Material Combination field #}
+    {% snippet 'snippets/ckanext_resource_custom_metadata_field.html', 
+        resources=pkg_dict['resources'],
+        box_class='row material-comb-box',
+        box_id='material_comb_box_',
+        input_name='material_combination_',
+        input_label='Material Combination',
+        remove_icon_id='material_comb_box_remove_',
+        add_new_button_id='mat_comb',
+        add_new_button_text='New Material Combination',
+        form=input_object
+    %}    
     <hr>
     
     
