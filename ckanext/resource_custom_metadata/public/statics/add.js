@@ -56,4 +56,23 @@ $(document).ready(function(){
            $(this).hide();
          }
        });
+
+       /**
+     * Add new metadata input field for Data Type
+     * 
+     */
+        $('#data_type_box_1').show();
+        $('#data_type_new').click(function(){
+          let all_visible = false;
+          for(let i=1; i <= $('.data-type-box').length; i++){
+            if ($('#data_type_box_' + i).is(':hidden')){
+              $('#data_type_box_' + i).fadeIn();
+              all_visible = true;
+              break;
+            }
+          }
+          if(!all_visible){
+            $(this).hide();
+          }
+        });
 });
