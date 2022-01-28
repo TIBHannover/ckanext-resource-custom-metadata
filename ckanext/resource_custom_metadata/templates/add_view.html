@@ -3,7 +3,7 @@
 
 {% block styles %}
   {{ super() }}
-  {# {% asset 'ckanext-organization-group/ownership-css' %} #}
+  {% asset 'ckanext-resource-custom-metadata/add-css' %}
 {% endblock styles %} 
 
 {% block breadcrumb_content %}
@@ -28,17 +28,48 @@
         </p>
     </div>
   </div>
+
   <form id="ownership-form" class="" method="post" action='{{action}}' data-module="basic-form" enctype="multipart/form-data">
-    <div class="row resource-custom-metedata-box">
-        <div class="col-sm-6">
-            {{ input_object.input('material_combination', 
-                id='material_combination', 
-                label = "Material Combination",
-                type='text',
-                classes=['control-full'], attrs={'class': 'custom-resource-metadata-input'}, is_required=True) 
-            }} 
+    
+    {% for res in pkg_dict['resources'] %}
+        <div class="row material-comb-box" id= {{'material_comb_box_' ~ loop.index}}>
+            <div class="col-sm-6">
+                {{ input_object.input('material_combination_' ~ loop.index, 
+                    id='material_combination_' ~ loop.index, 
+                    label = "Material Combination",
+                    type='text',
+                    classes=['control-full'], attrs={'class': 'custom-resource-metadata-input'}, is_required=False) 
+                }} 
+            </div>
+            <div class="col-sm-3">
+                {% snippet 'snippets/ckanext_resource_custom_metadata_modal.html', 
+                    metadata_field_name='material_combination',
+                    metadata_field_title='Material Combination',
+                    counter_id=loop.index,
+                    resources=pkg_dict['resources']
+                %}
+            </div>
         </div>
-    </div>
+    {% endfor %}
+    <button type="button" class="btn btn-primary new-material-combination" id='mat_comb'>+ {{_('New Material Combination')}}</button>
+    <hr>
+    
+    
+    
+    
+
+    <br><br><br>
+
+
+
+
+
+
+
+
+
+
+
     <div class="row resource-custom-metedata-box">
         <div class="col-sm-6">
             {{ input_object.input('surface_preparation', 
@@ -96,5 +127,5 @@
 
 {% block scripts %}
   {{ super() }}
-  {# {% asset 'ckanext-organization-group/ownership-js' %} #}
+  {% asset 'ckanext-resource-custom-metadata/add-js' %}
 {% endblock %}
