@@ -1,18 +1,25 @@
 
-{% asset 'ckanext-organization-group/stage-css' %}
-{% asset 'ckanext-organization-group/stage-js' %}
+{% asset 'ckanext-resource-custom-metadata/stage-css' %}
+{% asset 'ckanext-resource-custom-metadata/stage-js' %}
 
 {% set s1 = stages[0] or 'active' %}
 {% set s2 = stages[1] or 'uncomplete' %}
 {% set s3 =  stages[2] or 'uncomplete' %}
-{% if h.mediawiki_is_enabled() %}
+{% if h.is_plugin_enabled('organization_group') %}
   {% set s4 = stages[3] or 'uncomplete' %}
 {% endif %}
+{% if h.is_plugin_enabled('semantic_media_wiki') %}
+  {% set s5 = stages[4] or 'uncomplete' %}
+{% endif %}
+
 {% if s1 != 'uncomplete' %}{% set class = 'stage-1' %}{% endif %}
 {% if s2 != 'uncomplete' %}{% set class = 'stage-2' %}{% endif %}
 {% if s3 != 'uncomplete' %}{% set class = 'stage-3' %}{% endif %}
-{% if h.mediawiki_is_enabled() %}
+{% if h.is_plugin_enabled('organization_group') %}
   {% if s4 != 'uncomplete' %}{% set class = 'stage-4' %}{% endif %}
+{% endif %}
+{% if h.is_plugin_enabled('semantic_media_wiki') %}
+  {% if s5 != 'uncomplete' %}{% set class = 'stage-5' %}{% endif %}
 {% endif %}
 
 <ol class="stages stage-4">
@@ -39,15 +46,25 @@
 
   <li class="third {{ s3 }}">
         {% if s3 != 'complete' %}
-        <span class="highlight">{{ _('Set Ownership') }}</span>
+        <span class="highlight">{{ _('Extra Metadata') }}</span>
         {% else %}
-        <span class="highlight">{{ _('Set Ownership') }}</span>
+        <span class="highlight">{{ _('Extra Metadata') }}</span>
         {% endif %}
     </li>
 
-{% if h.mediawiki_is_enabled() %}
-  <li class="last {{ s4 }}">
+{% if h.is_plugin_enabled('organization_group') %}
+  <li class="forth {{ s4 }}">
     {% if s4 != 'complete' %}
+      <span class="highlight">{{ _('Set Ownership') }}</span>
+    {% else %}
+        <span class="highlight">{{ _('Set Ownership') }}</span>
+    {% endif %}
+  </li>
+{% endif %}
+
+{% if h.is_plugin_enabled('semantic_media_wiki') %}
+  <li class="last {{ s5 }}">
+    {% if s5 != 'complete' %}
       <span class="highlight">{{ _('Equipment(s)') }}</span>
     {% else %}
         <span class="highlight">{{ _('Equipment(s)') }}</span>
