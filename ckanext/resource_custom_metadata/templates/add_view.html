@@ -45,6 +45,19 @@
         form=input_object
     %}    
     <hr>
+
+    {# Surface Preparation field #}
+    {% snippet 'snippets/ckanext_resource_custom_metadata_field.html', 
+        resources=pkg_dict['resources'],
+        box_class='row surface-preparation-box',
+        box_id='surface_preparation_box_',
+        input_name='surface_preparation_',
+        input_label='Surface Preparation',
+        remove_icon_id='surface_preparation_box_remove_',
+        add_new_button_id='surface_preparation_new',
+        add_new_button_text='New Surface Preparation',
+        form=input_object
+    %}    
     
     
     

@@ -2,7 +2,13 @@
     display: none;
 }
 
-.material-comb-box{
+hr {
+    border: none;
+    height: 3px;
+    background-color: rgb(14, 165, 46); 
+}
+
+.material-comb-box, .surface-preparation-box{
     display: none;
 }
 
