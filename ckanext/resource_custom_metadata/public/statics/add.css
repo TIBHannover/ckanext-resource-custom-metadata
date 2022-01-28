@@ -8,7 +8,7 @@ hr {
     background-color: rgb(14, 29, 165); 
 }
 
-.material-comb-box, .surface-preparation-box, .atmosphere-box, .data-type-box{
+.material-comb-box, .surface-preparation-box, .atmosphere-box, .data-type-box, .analysis-method-box{
     display: none;
 }
 

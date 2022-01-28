@@ -75,4 +75,23 @@ $(document).ready(function(){
             $(this).hide();
           }
         });
+
+     /**
+     * Add new metadata input field for Analysis Method
+     * 
+     */
+      $('#analysis_method_box_1').show();
+      $('#analysis_method_new').click(function(){
+        let all_visible = false;
+        for(let i=1; i <= $('.analysis-method-box').length; i++){
+          if ($('#analysis_method_box_' + i).is(':hidden')){
+            $('#analysis_method_box_' + i).fadeIn();
+            all_visible = true;
+            break;
+          }
+        }
+        if(!all_visible){
+          $(this).hide();
+        }
+      });
 });
