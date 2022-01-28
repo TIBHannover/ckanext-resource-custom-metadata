@@ -25,9 +25,9 @@
 <ol class="stages stage-4">
   <li class="first {{ s1 }}">
     {% if s1 != 'complete' %}
-      <span class="highlight">{{ _('Create dataset') }}</span>
+      <span class="highlight">{{ _('dataset') }}</span>
     {% else %}
-      <button class="highlight" name="save" value="go-dataset" type="submit">{{ _('Create dataset') }}</button>
+      <button class="highlight" name="save" value="go-dataset" type="submit">{{ _('dataset') }}</button>
     {% endif %}
   </li>
     
@@ -46,16 +46,16 @@
 
   <li class="third {{ s3 }}">
         {% if s3 != 'complete' %}
-        <span class="highlight">{{ _('Extra Metadata') }}</span>
+        <span class="highlight">{{ _('Metadata') }}</span>
         {% else %}
-        <span class="highlight">{{ _('Extra Metadata') }}</span>
+        <span class="highlight">{{ _('Metadata') }}</span>
         {% endif %}
     </li>
 
 {% if h.is_plugin_enabled('organization_group') %}
   <li class="forth {{ s4 }}">
     {% if s4 != 'complete' %}
-      <span class="highlight">{{ _('Set Ownership') }}</span>
+      <span class="highlight">{{ _('Ownership') }}</span>
     {% else %}
         <span class="highlight">{{ _('Set Ownership') }}</span>
     {% endif %}

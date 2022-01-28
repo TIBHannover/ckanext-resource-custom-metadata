@@ -1,0 +1,16 @@
+stage-css:
+  output: ckanext-upgrade-dataset/%(version)s_my.css
+  contents:
+    - stages.css
+
+stage-js:  
+  output: ckanext-upgrade-dataset/%(version)s_my.js
+  extra:
+    preload:
+      - base/main
+      - vendor/vendor
+      - vendor/bootstrap
+      - vendor/jquery
+      - vendor/jquery.ui.core
+  contents:
+    - stages.js

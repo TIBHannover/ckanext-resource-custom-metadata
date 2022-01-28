@@ -4,11 +4,11 @@
     box-sizing: border-box;
     line-height: 27px;
     counter-increment: stage;
-    width: 45%;
+    width: 20% !important;
     background-color: #EDEDED;
     float: left;
     padding: 10px 20px;
     position: relative;
-    font-size: 13px;
+    font-size: 12px;
     z-index: 0;
 }
