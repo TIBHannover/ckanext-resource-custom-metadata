@@ -21,13 +21,28 @@
   {% endblock %}
 
   {% set action = h.url_for('resource_custom_metadata.index', id=pkg_dict['name'], _external=True) %}
+  <div class="row">
+    <div class="col-sm-12">
+        <p>
+            {{_('')}}
+        </p>
+    </div>
+  </div>
   <form id="ownership-form" class="" method="post" action='{{action}}' data-module="basic-form" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-sm-6">
+            {{ input_object.input('material_combination', 
+                id='material_combination', 
+                label = "Material Combination",
+                type='text',
+                classes=['control-full'], attrs={'class': 'custom-resource-metadata-input'}, is_required=True) 
+            }} 
+        </div>
+    </div>
 
-    {{ input_object.input('test', 
-                id='test', 
-                label = "",                 
-                classes=[], attrs={'class': ''}, is_required=false) 
-    }} 
+
+
+    
     <br>
     <div class="form-actions">
         {% if h.cancel_dataset_is_enabled() %} 

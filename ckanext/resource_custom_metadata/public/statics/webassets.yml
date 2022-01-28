@@ -1,10 +1,15 @@
 stage-css:
-  output: ckanext-upgrade-dataset/%(version)s_my.css
+  output: ckanext-resource-custom-metadata/%(version)s_my.css
   contents:
     - stages.css
 
+add-css:
+  output: ckanext-resource-custom-metadata/%(version)s_my.css
+  contents:
+    - add.css
+
 stage-js:  
-  output: ckanext-upgrade-dataset/%(version)s_my.js
+  output: ckanext-resource-custom-metadata/%(version)s_my.js
   extra:
     preload:
       - base/main
