@@ -15,3 +15,4 @@ class BaseController():
             stages = ['complete', 'complete', 'active', 'uncomplete']
         
         return render_template('add_view.html', pkg_dict=package, custom_stage=stages)
+        

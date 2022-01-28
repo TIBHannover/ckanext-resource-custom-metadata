@@ -20,7 +20,7 @@
       {% endif %}
   {% endblock %}
 
-  {% set action = h.url_for('resource_custom_metadata.index', _external=True) %}
+  {% set action = h.url_for('resource_custom_metadata.index', id=pkg_dict['name'], _external=True) %}
   <form id="ownership-form" class="" method="post" action='{{action}}' data-module="basic-form" enctype="multipart/form-data">
 
     {{ input_object.input('test', 
