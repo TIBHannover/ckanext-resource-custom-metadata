@@ -36,10 +36,10 @@
     {% snippet 'snippets/ckanext_resource_custom_metadata_field.html', 
         resources=pkg_dict['resources'],
         box_class='row material-comb-box',
-        box_id='material_comb_box_',
+        box_id='material_combination_box_',
         input_name='material_combination_',
         input_label='Material Combination',
-        remove_icon_id='material_comb_box_remove_',
+        remove_icon_id='material_combination_box_remove_',
         add_new_button_id='mat_comb',
         add_new_button_text='New Material Combination',
         form=input_object
@@ -100,27 +100,9 @@
         add_new_button_text='New Analysis Method',
         form=input_object
     %}        
-    
-    
-    
-    
 
     <br><br><br>
-
-
-
-    <div class="row resource-custom-metedata-box">
-        <div class="col-sm-6">
-            {{ input_object.input('analysis_method', 
-                id='analysis_method', 
-                label = "Analysis Method",
-                type='text',
-                classes=['control-full'], attrs={'class': 'custom-resource-metadata-input'}, is_required=True) 
-            }} 
-        </div>
-    </div>
     
-    <br>
     <div class="form-actions">
         {% if h.cancel_dataset_is_enabled() %} 
           {% set dest_url = h.url_for('cancel_dataset_creation.cancel_dataset', package_id=pkg_dict.id, is_draft=0, _external=True) %}
@@ -137,4 +119,5 @@
 {% block scripts %}
   {{ super() }}
   {% asset 'ckanext-resource-custom-metadata/add-js' %}
+  {% asset 'ckanext-resource-custom-metadata/field-js' %}
 {% endblock %}

@@ -36,3 +36,15 @@ add-js:
       - vendor/jquery.ui.core
   contents:
     - add.js
+
+field-js:  
+  output: ckanext-resource-custom-metadata/%(version)s_my.js
+  extra:
+    preload:
+      - base/main
+      - vendor/vendor
+      - vendor/bootstrap
+      - vendor/jquery
+      - vendor/jquery.ui.core
+  contents:
+    - field.js

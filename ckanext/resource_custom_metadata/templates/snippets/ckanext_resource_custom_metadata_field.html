@@ -16,11 +16,13 @@
                 resources=resources
             %}
         </div>
-        <div class="col-sm-2">
-            <a href="#" class="box-remove-anchor" id={{ 'material_comb_box_remove_' ~ loop.index}}>
-                <i class="fa fa-minus-circle remove-metadata-icon"></i>
-            </a>
-        </div>
+        {% if loop.index > 1 %}
+            <div class="col-sm-2">
+                <a href="#" class="box-remove-anchor" id={{remove_icon_id ~ loop.index}}>
+                    <i class="fa fa-minus-circle remove-metadata-icon"></i>
+                </a>
+            </div>
+        {% endif %}
     </div>
 {% endfor %}
 <button type="button" class="btn btn-success" id={{add_new_button_id}}>+ {{add_new_button_text}}</button>
