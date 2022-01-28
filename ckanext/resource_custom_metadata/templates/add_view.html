@@ -41,13 +41,18 @@
                     classes=['control-full'], attrs={'class': 'custom-resource-metadata-input'}, is_required=False) 
                 }} 
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-4">
                 {% snippet 'snippets/ckanext_resource_custom_metadata_modal.html', 
                     metadata_field_name='material_combination',
                     metadata_field_title='Material Combination',
                     counter_id=loop.index,
                     resources=pkg_dict['resources']
                 %}
+            </div>
+            <div class="col-sm-2">
+                <a href="#" class="material-comb-box-remove-anchor" id={{ '"material_comb_box_' ~ loop.index}}>
+                    <i class="fa fa-minus-circle remove-metadata-icon"></i>
+                </a>
             </div>
         </div>
     {% endfor %}

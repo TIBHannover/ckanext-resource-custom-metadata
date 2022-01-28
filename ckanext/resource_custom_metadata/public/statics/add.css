@@ -5,3 +5,8 @@
 .material-comb-box{
     display: none;
 }
+
+.remove-metadata-icon{
+    color: red;
+    font-size: 35px !important;
+  }
