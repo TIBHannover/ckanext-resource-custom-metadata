@@ -5,10 +5,10 @@
 hr {
     border: none;
     height: 3px;
-    background-color: rgb(14, 165, 46); 
+    background-color: rgb(14, 29, 165); 
 }
 
-.material-comb-box, .surface-preparation-box{
+.material-comb-box, .surface-preparation-box, .atmosphere-box{
     display: none;
 }
 

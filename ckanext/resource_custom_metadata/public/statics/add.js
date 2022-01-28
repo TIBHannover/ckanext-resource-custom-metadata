@@ -37,4 +37,23 @@ $(document).ready(function(){
           $(this).hide();
         }
       });
+
+      /**
+     * Add new metadata input field for Atmosphere
+     * 
+     */
+       $('#atmosphere_box_1').show();
+       $('#atmosphere_new').click(function(){
+         let all_visible = false;
+         for(let i=1; i <= $('.atmosphere-box').length; i++){
+           if ($('#atmosphere_box_' + i).is(':hidden')){
+             $('#atmosphere_box_' + i).fadeIn();
+             all_visible = true;
+             break;
+           }
+         }
+         if(!all_visible){
+           $(this).hide();
+         }
+       });
 });
