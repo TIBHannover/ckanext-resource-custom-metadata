@@ -22,9 +22,11 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
 
     def _custom_resource_schema(self, schema):
         # Add our custom_resource_text metadata field to the schema
-        schema['resources'].update({
-                'custom_resource_text' : [ toolkit.get_validator('ignore_missing') ]
-                })
+        schema['resources'].update({'material_combination' : [] })
+        schema['resources'].update({'surface_preparation' : [] })
+        schema['resources'].update({'Atmosphere' : [] })
+        schema['resources'].update({'data_type' : [] })
+        schema['resources'].update({'analysis_method' : [] })
         return schema
 
     def create_package_schema(self):
@@ -39,8 +41,9 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
 
     def show_package_schema(self):
         schema = super(ResourceCustomMetadataPlugin, self).show_package_schema()
-
-        schema['resources'].update({
-                'custom_resource_text' : [ toolkit.get_validator('ignore_missing') ]
-            })
+        schema['resources'].update({'material_combination' : [] })
+        schema['resources'].update({'surface_preparation' : [] })
+        schema['resources'].update({'Atmosphere' : [] })
+        schema['resources'].update({'data_type' : [] })
+        schema['resources'].update({'analysis_method' : [] })
         return schema
