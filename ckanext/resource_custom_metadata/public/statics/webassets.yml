@@ -8,6 +8,11 @@ add-css:
   contents:
     - add.css
 
+modal-css:
+  output: ckanext-resource-custom-metadata/%(version)s_my.css
+  contents:
+    - modal.css
+
 stage-js:  
   output: ckanext-resource-custom-metadata/%(version)s_my.js
   extra:
