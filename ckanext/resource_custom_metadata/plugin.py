@@ -1,10 +1,12 @@
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
+from ckanext.resource_custom_metadata.lib.helper import Helper
 
 
 class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IDatasetForm, inherit=False)
+    plugins.implements(plugins.ITemplateHelpers)
 
     # IConfigurer
 
@@ -47,3 +49,10 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
         schema['resources'].update({'data_type' : [] })
         schema['resources'].update({'analysis_method' : [] })
         return schema
+
+
+     #ITemplateHelpers
+
+    def get_helpers(self):
+        return {'is_plugin_enabled': Helper.is_plugin_enabled
+        }
