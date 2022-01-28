@@ -41,7 +41,7 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
         # Add our custom_resource_text metadata field to the schema
         schema['resources'].update({'material_combination' : [toolkit.get_validator('ignore_missing')] })
         schema['resources'].update({'surface_preparation' : [toolkit.get_validator('ignore_missing')] })
-        schema['resources'].update({'Atmosphere' : [toolkit.get_validator('ignore_missing')] })
+        schema['resources'].update({'atmosphere' : [toolkit.get_validator('ignore_missing')] })
         schema['resources'].update({'data_type' : [toolkit.get_validator('ignore_missing')] })
         schema['resources'].update({'analysis_method' : [toolkit.get_validator('ignore_missing')] })
         return schema

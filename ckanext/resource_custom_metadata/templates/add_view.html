@@ -29,7 +29,7 @@
     </div>
   </div>
   <form id="ownership-form" class="" method="post" action='{{action}}' data-module="basic-form" enctype="multipart/form-data">
-    <div class="row">
+    <div class="row resource-custom-metedata-box">
         <div class="col-sm-6">
             {{ input_object.input('material_combination', 
                 id='material_combination', 
@@ -39,9 +39,46 @@
             }} 
         </div>
     </div>
-
-
-
+    <div class="row resource-custom-metedata-box">
+        <div class="col-sm-6">
+            {{ input_object.input('surface_preparation', 
+                id='surface_preparation', 
+                label = "Surface Preparation",
+                type='text',
+                classes=['control-full'], attrs={'class': 'custom-resource-metadata-input'}, is_required=True) 
+            }} 
+        </div>
+    </div>
+    <div class="row resource-custom-metedata-box">
+        <div class="col-sm-6">
+            {{ input_object.input('atmosphere', 
+                id='atmosphere', 
+                label = "Atmosphere",
+                type='text',
+                classes=['control-full'], attrs={'class': 'custom-resource-metadata-input'}, is_required=True) 
+            }} 
+        </div>
+    </div>
+    <div class="row resource-custom-metedata-box">
+        <div class="col-sm-6">
+            {{ input_object.input('data_type', 
+                id='data_type', 
+                label = "Data Type",
+                type='text',
+                classes=['control-full'], attrs={'class': 'custom-resource-metadata-input'}, is_required=True) 
+            }} 
+        </div>
+    </div>
+    <div class="row resource-custom-metedata-box">
+        <div class="col-sm-6">
+            {{ input_object.input('analysis_method', 
+                id='analysis_method', 
+                label = "Analysis Method",
+                type='text',
+                classes=['control-full'], attrs={'class': 'custom-resource-metadata-input'}, is_required=True) 
+            }} 
+        </div>
+    </div>
     
     <br>
     <div class="form-actions">
