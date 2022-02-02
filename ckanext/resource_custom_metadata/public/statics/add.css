@@ -12,3 +12,7 @@ hr {
     color: red;
     font-size: 35px !important;
   }
+
+.right-side-columns{
+    margin-top: 20px;
+}

@@ -8,7 +8,7 @@
                 classes=['control-full'], attrs={'class': 'custom-resource-metadata-input'}, is_required=False) 
             }} 
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-4 right-side-columns">
             {% snippet 'snippets/ckanext_resource_custom_metadata_modal.html', 
                 metadata_field_name=input_name,
                 metadata_field_title=input_label,
@@ -17,7 +17,7 @@
             %}
         </div>
         {% if loop.index > 1 %}
-            <div class="col-sm-2">
+            <div class="col-sm-2 right-side-columns">
                 <a href="#" class="box-remove-anchor" id={{remove_icon_id ~ loop.index}}>
                     <i class="fa fa-minus-circle remove-metadata-icon"></i>
                 </a>
