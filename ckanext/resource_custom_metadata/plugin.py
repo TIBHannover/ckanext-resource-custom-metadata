@@ -28,6 +28,14 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
             BaseController.index,
             methods=['GET']
             )
+        
+        blueprint.add_url_rule(
+            u'/resource_custom_metadata/save_metadata',
+            u'save_metadata',
+            BaseController.save_metadata,
+            methods=['POST']
+            )
+
         return blueprint
 
 

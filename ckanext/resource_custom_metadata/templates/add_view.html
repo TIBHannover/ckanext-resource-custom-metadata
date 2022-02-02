@@ -21,17 +21,18 @@
       {% endif %}
   {% endblock %}
 
-  {% set action = h.url_for('resource_custom_metadata.index', id=pkg_dict['name'], _external=True) %}
+  {% set action = h.url_for('resource_custom_metadata.save_metadata', _external=True) %}
   <div class="row">
     <div class="col-sm-12">
         <p>
-            {{_('')}}
+            <b>{{_('What can I do?')}}</b>
         </p>
     </div>
-  </div>
+  </div><br><br>
   <input type="hidden" name="resource_count" id="resorces_count" value={{pkg_dict['resources']|length}}>
   <form id="ownership-form" class="" method="post" action='{{action}}' data-module="basic-form" enctype="multipart/form-data">
-    
+    <input type="hidden" name="resources_count" value={{pkg_dict['resources']|length}}>
+
     {# Material Combination field #}
     {% snippet 'snippets/ckanext_resource_custom_metadata_field.html', 
         resources=pkg_dict['resources'],
