@@ -29,4 +29,22 @@ $(document).ready(function(){
         
     });
 
+
+    /**
+     * click the select all checkbox
+     * 
+     */
+     $('.select-all-resources').click(function(){
+        let id = $(this).attr('id');
+        field_name_box_and_id = $(this).attr('id').split('select-all-resources-')[1];
+        let checkBoxes = $('.resource-checkbox-input-' + field_name_box_and_id);
+        for(let i=0; i < checkBoxes.length; i++){
+            if($(checkBoxes[i]).is(':visible')){
+              if($(checkBoxes[i]).prop('checked') == !($(this).prop('checked'))){
+                  $(checkBoxes[i]).click();
+              }
+            }
+        }
+    });
+
 });
