@@ -32,6 +32,7 @@
   <input type="hidden" name="resource_count" id="resorces_count" value={{pkg_dict['resources']|length}}>
   <form id="ownership-form" class="" method="post" action='{{action}}' data-module="basic-form" enctype="multipart/form-data">
     <input type="hidden" name="resources_count" value={{pkg_dict['resources']|length}}>
+    <input type="hidden" name="pkg_name" value={{pkg_dict['name']}}>
 
     {# Material Combination field #}
     {% snippet 'snippets/ckanext_resource_custom_metadata_field.html', 
