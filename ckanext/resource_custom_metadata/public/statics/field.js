@@ -13,9 +13,9 @@ $(document).ready(function(){
            break;
          }
        }
-       if(!all_visible){
-         $(this).hide();
-       }
+      //  if(!all_visible){
+      //    $(this).hide();
+      //  }
      });
 
      /**
