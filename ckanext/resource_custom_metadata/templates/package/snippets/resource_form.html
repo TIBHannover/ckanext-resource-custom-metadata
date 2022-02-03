@@ -1,0 +1,40 @@
+{% ckan_extends %}
+
+{% block basic_fields %}
+    {{ super() }}
+
+    {{ form.input('material_combination',
+        id='material_combination_id',
+        label=_('Material Combination'), 
+        value=data.material_combination,  
+        classes=['control-full']) 
+    }}
+
+    {{ form.input('surface_preparation',
+        id='surface_preparation_id',
+        label=_('Surface Preparation'), 
+        value=data.surface_preparation,  
+        classes=['control-full']) 
+    }}
+
+    {{ form.input('atmosphere',
+        id='atmosphere_id',
+        label=_('Atmosphere'), 
+        value=data.atmosphere,  
+        classes=['control-full']) 
+    }}
+
+    {{ form.input('data_type',
+        id='data_type_id',
+        label=_('Data Type'), 
+        value=data.data_type,  
+        classes=['control-full']) 
+    }}
+
+    {{ form.input('analysis_method',
+        id='analysis_method_id',
+        label=_('Analysis Method'), 
+        value=data.analysis_method,  
+        classes=['control-full']) 
+    }}
+{% endblock  %}
