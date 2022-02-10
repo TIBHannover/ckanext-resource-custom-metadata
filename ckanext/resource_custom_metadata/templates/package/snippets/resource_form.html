@@ -5,7 +5,7 @@
 
     {{ form.input('material_combination',
         id='material_combination_id',
-        label=_('Material Combination'), 
+        label=_('Material or Material Combination'), 
         value=data.material_combination,  
         classes=['control-full']) 
     }}
@@ -26,14 +26,14 @@
 
     {{ form.input('data_type',
         id='data_type_id',
-        label=_('Data Type'), 
+        label=_('Data type (mechanical, chemical ...)'), 
         value=data.data_type,  
         classes=['control-full']) 
     }}
 
     {{ form.input('analysis_method',
         id='analysis_method_id',
-        label=_('Analysis Method'), 
+        label=_('Measurement/Analysis method'), 
         value=data.analysis_method,  
         classes=['control-full']) 
     }}
