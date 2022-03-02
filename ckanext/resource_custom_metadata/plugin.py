@@ -53,6 +53,7 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
         schema['resources'].update({'atmosphere' : [toolkit.get_validator('ignore_missing')] })
         schema['resources'].update({'data_type' : [toolkit.get_validator('ignore_missing')] })
         schema['resources'].update({'analysis_method' : [toolkit.get_validator('ignore_missing')] })
+        schema['resources'].update({'is_automated_processed' : [toolkit.get_validator('ignore_missing')] })
         return schema
 
     def create_package_schema(self):
@@ -72,6 +73,7 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
         schema['resources'].update({'atmosphere' : [toolkit.get_validator('ignore_missing')] })
         schema['resources'].update({'data_type' : [toolkit.get_validator('ignore_missing')] })
         schema['resources'].update({'analysis_method' : [toolkit.get_validator('ignore_missing')] })
+        schema['resources'].update({'is_automated_processed' : [toolkit.get_validator('ignore_missing')] })
         return schema
 
 
@@ -104,6 +106,7 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
                 resource['atmosphere'] = Helper.get_metadata_value(dataframe, 'Atmosphaere')
                 resource['data_type'] = Helper.get_metadata_value(dataframe, 'Datentyp')
                 resource['surface_preparation'] = Helper.get_metadata_value(dataframe, 'Vorbehandlung')
+                resource['is_automated_processed'] = True
 
   
             
