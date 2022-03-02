@@ -18,7 +18,7 @@ class BaseController():
         custom_metadata_fields = {'material_combination': [], 'surface_preparation': [], 'atmosphere': [], 'data_type': [], 'analysis_method': []}
         for meta in custom_metadata_fields.keys():
             for res in resouces:
-                if res[meta] and res[meta] != '':
+                if  meta in res.keys() and res[meta] and res[meta] != '':
                     custom_metadata_fields[meta].append(res[meta])
 
         for meta in custom_metadata_fields.keys():

@@ -26,7 +26,7 @@ class Helper():
             return False
         for header in df_columns:
             if header.strip() not in STANDARD_HEADERS:
-                return False            
+                return False
         return True
 
     
