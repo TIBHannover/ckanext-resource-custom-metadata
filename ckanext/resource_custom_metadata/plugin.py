@@ -114,7 +114,6 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
                 resource['atmosphere'] = Helper.get_metadata_value(dataframe, 'Atmosphaere')
                 resource['data_type'] = Helper.get_metadata_value(dataframe, 'Datentyp')
                 resource['surface_preparation'] = Helper.get_metadata_value(dataframe, 'Vorbehandlung')
-                resource['analysis_method'] = ''
                 resource['is_automated_processed'] = True
 
   

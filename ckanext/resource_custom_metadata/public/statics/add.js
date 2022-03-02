@@ -53,13 +53,21 @@ $(document).ready(function(){
      * 
      */
 
-      // let resources =  $('.resource-box');
-      // for(let i=0; i < resources.length; i++){
-      //   if($(resources[i]).prop('checked') == true){
-      //     $(".checkbox-container[value=" + $(resources[i]).val() + "]").hide();
-      //     $(resources[i]).parent().show();  
-      //   }
-      // }
+      let resources_checkbox = $('.resource-box');
+      for(let i=0; i < resources_checkbox.length; i++){
+          if($(resources_checkbox[i]).val() ===  $(this).val() && $(resources_checkbox[i]).attr('field_name') ===  $(this).attr('field_name')){
+            if($(this).prop('checked') == true){
+              $(resources_checkbox[i]).parent().hide();    
+            }
+            else{
+              $(resources_checkbox[i]).parent().show();
+            }
+          }
+      }
+
+      if($(this).prop('checked') == true){
+        $(this).parent().show();          
+      }
   
       $('.resource-box').click(function(){
           let resources_checkbox = $('.resource-box');
