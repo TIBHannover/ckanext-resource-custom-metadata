@@ -86,7 +86,7 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
 
     def after_create(self, context, resource):
         if resource['url_type'] == 'upload':
-            dataframe = None
+            dataframe = []
             xls_dataframes = None
             if Helper.is_csv(resource):
                 dataframe = Helper.csv_to_dataframe(resource['id'])
@@ -95,7 +95,7 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
             else:
                 return resource
             
-            if dataframe:
+            if len(dataframe) != 0:
                 # resource is csv
                 if not Helper.is_possible_to_automate(dataframe):
                     return resource
@@ -109,7 +109,7 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
             
         return resource
 
-        
+
     
     def before_create(self, context, resource):
         return resource

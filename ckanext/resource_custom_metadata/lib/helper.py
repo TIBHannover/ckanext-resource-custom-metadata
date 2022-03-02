@@ -24,18 +24,18 @@ class Helper():
         df_columns = resource_df.columns
         if len(df_columns) != len(STANDARD_HEADERS):
             return False
-        for header in STANDARD_HEADERS:
-            if header not in df_columns:
+        for header in df_columns:
+            if header.strip() not in STANDARD_HEADERS:
                 return False            
         return True
 
     
     @staticmethod
     def get_metadata_value(dataframe, column_title):
-        if len(list(dataframe[column_title])) != 2:
-            return None
+        if len(list(dataframe[column_title])) < 1:
+            return ''
         
-        return list(dataframe[column_title])[1]
+        return list(dataframe[column_title])[0]
 
 
 
