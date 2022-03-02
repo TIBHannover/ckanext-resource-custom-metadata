@@ -14,7 +14,21 @@ class BaseController():
         if not Helper.is_plugin_enabled('media_wiki'):
             stages = ['complete', 'complete', 'active', 'uncomplete']
         
-        return render_template('add_view.html', pkg_dict=package, custom_stage=stages)
+        resouces = package['resources']
+        custom_metadata_fields = {'material_combination': [], 'surface_preparation': [], 'atmosphere': [], 'data_type': [], 'analysis_method': []}
+        for meta in custom_metadata_fields.keys():
+            for res in resouces:
+                if res[meta] and res[meta] != '':
+                    custom_metadata_fields[meta].append(res[meta])
+
+        for meta in custom_metadata_fields.keys():
+            custom_metadata_fields[meta] = list(set( custom_metadata_fields[meta])) 
+
+        return render_template('add_view.html', 
+            pkg_dict=package, 
+            custom_stage=stages,
+            custom_metadata_fields=custom_metadata_fields
+        )
     
 
     def save_metadata():

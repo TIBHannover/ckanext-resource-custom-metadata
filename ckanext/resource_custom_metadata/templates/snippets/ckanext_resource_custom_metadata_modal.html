@@ -18,16 +18,30 @@
           <br>
         <div class="resources-list-box">
           {% for res in resources %}
-            <label class="checkbox-container" value={{res.id}} id="{{'resource-checkbox-input-label-' ~ metadata_field_name ~ counter_id}}">
-                {{res.name}}
-                <input type="checkbox" 
-                  class="{{'resource-checkbox-input-' ~ metadata_field_name ~ counter_id}}  resource-box"
-                  field_name={{metadata_field_name}}
-                  name={{'custom_metadata_' ~ metadata_field_name ~ counter_id}} 
-                  value={{res.id}}
-                  >
-                <span class="checkmark"></span>
-            </label>
+            {% if res['is_automated_processed'] and res[metadata_actual_name] == metadata_field_value %}
+              <label class="checkbox-container" value={{res.id}} id="{{'resource-checkbox-input-label-' ~ metadata_field_name ~ counter_id}}">
+                  {{res.name}}
+                  <input type="checkbox" 
+                    class="{{'resource-checkbox-input-' ~ metadata_field_name ~ counter_id}}  resource-box"
+                    field_name={{metadata_field_name}}
+                    name={{'custom_metadata_' ~ metadata_field_name ~ counter_id}} 
+                    value={{res.id}},
+                    checked
+                    >
+                  <span class="checkmark"></span>
+              </label>
+            {% else %}
+              <label class="checkbox-container" value={{res.id}} id="{{'resource-checkbox-input-label-' ~ metadata_field_name ~ counter_id}}">
+                  {{res.name}}
+                  <input type="checkbox" 
+                    class="{{'resource-checkbox-input-' ~ metadata_field_name ~ counter_id}}  resource-box"
+                    field_name={{metadata_field_name}}
+                    name={{'custom_metadata_' ~ metadata_field_name ~ counter_id}} 
+                    value={{res.id}},
+                    >
+                  <span class="checkmark"></span>
+              </label>
+            {%  endif %}
           {% endfor %}
         </div>
       </div>
