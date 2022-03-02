@@ -86,7 +86,26 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
 
     def after_create(self, context, resource):
         if resource['url_type'] == 'upload':
-             resource['atmosphere'] = 'test_test'
+            dataframe = None
+            xls_dataframes = None
+            if Helper.is_csv(resource):
+                dataframe = Helper.csv_to_dataframe(resource['id'])
+            elif Helper.is_xlsx(resource):
+                xls_dataframes = Helper.xlsx_to_dataframe(resource['id'])
+            else:
+                return resource
+        
+            
+
+
+
+
+
+
+
+
+
+            
         return resource
     
     def before_create(self, context, resource):
