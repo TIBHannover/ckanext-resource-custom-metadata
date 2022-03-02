@@ -6,6 +6,7 @@ import pandas as pd
 
 
 RESOURCE_DIR = toolkit.config['ckan.storage_path'] + '/resources/'
+STANDARD_HEADERS = ['X-Kategorie', 'Y-Kategorie', 'Datentyp', 'Werkstoff-1', 'Werkstoff-2', 'Atmosphaere', 'Vorbehandlung']
 
 
 class Helper():
@@ -15,6 +16,18 @@ class Helper():
         if plugin_name in plugins:
             return True
         return False
+    
+
+    @staticmethod
+    def is_possible_to_automate(resource_df):
+        df_columns = resource_df.columns
+        if len(df_columns) != len(STANDARD_HEADERS):
+            return False
+        for header in STANDARD_HEADERS:
+            if header not in df_columns:
+                return False            
+        return True
+
     
 
     @staticmethod

@@ -94,8 +94,14 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
                 xls_dataframes = Helper.xlsx_to_dataframe(resource['id'])
             else:
                 return resource
-        
             
+            if dataframe:
+                # resource is csv
+                if not Helper.is_possible_to_automate(dataframe):
+                    return resource
+                
+        
+
 
 
 
