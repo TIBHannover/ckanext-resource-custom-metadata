@@ -10,6 +10,7 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
     plugins.implements(plugins.IDatasetForm, inherit=False)
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.IBlueprint)
+    plugins.implements(plugins.IResourceController)
 
     # IConfigurer
 
@@ -79,3 +80,29 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
     def get_helpers(self):
         return {'is_plugin_enabled': Helper.is_plugin_enabled
         }
+    
+
+    # IResourceController
+
+    def after_create(self, context, resource):
+        if resource['url_type'] == 'upload':
+             resource['atmosphere'] = 'test_test'
+        return resource
+    
+    def before_create(self, context, resource):
+        return resource
+
+    def before_update(self, context, current, resource):
+        return resource
+    
+    def after_update(self, context, resource):
+        return resource
+    
+    def before_delete(self, context, resource, resources):
+        return resources
+    
+    def after_delete(self, context, resources):
+        return resources
+    
+    def before_show(self, resource_dict):
+        return resource_dict
