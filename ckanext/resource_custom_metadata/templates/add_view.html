@@ -35,6 +35,11 @@
   <form id="ownership-form" class="" method="post" action='{{action}}' data-module="basic-form" enctype="multipart/form-data">
     <input type="hidden" name="resources_count" value={{pkg_dict['resources']|length}}>
     <input type="hidden" name="pkg_name" value={{pkg_dict['name']}}>
+    <input type="hidden" name="processed_metadata_material_combination" value={{custom_metadata_fields['material_combination']|length}}>
+    <input type="hidden" name="processed_metadata_surface_preparation" value={{custom_metadata_fields['surface_preparation']|length}}>
+    <input type="hidden" name="processed_metadata_atmosphere" value={{custom_metadata_fields['atmosphere']|length}}>
+    <input type="hidden" name="processed_metadata_data_type" value={{custom_metadata_fields['data_type']|length}}>
+    <input type="hidden" name="processed_metadata_analysis_method" value={{custom_metadata_fields['analysis_method']|length}}>
 
     {# Material Combination field #}
     {% snippet 'snippets/ckanext_resource_custom_metadata_field.html', 
@@ -42,12 +47,12 @@
         box_class='row material-comb-box',
         box_id='material_combination_box_',
         input_name='material_combination_',
-        metadata_actual_name='material_combination',
         input_label='Material or Material Combination',
         remove_icon_id='material_combination_box_remove_',
         add_new_button_id='mat_comb',
         add_new_button_text='New Material or Material Combination',
         form=input_object,
+        metadata_actual_name='material_combination',
         selected_fields=custom_metadata_fields['material_combination']
     %}    
     <hr>
@@ -62,7 +67,9 @@
         remove_icon_id='surface_preparation_box_remove_',
         add_new_button_id='surface_preparation_new',
         add_new_button_text='New Surface Preparation',
-        form=input_object
+        form=input_object,
+        metadata_actual_name='surface_preparation',
+        selected_fields=custom_metadata_fields['surface_preparation']
     %}
     <hr>
 
@@ -76,7 +83,9 @@
         remove_icon_id='atmosphere_box_remove_',
         add_new_button_id='atmosphere_new',
         add_new_button_text='New Atmosphere',
-        form=input_object
+        form=input_object,
+        metadata_actual_name='atmosphere',
+        selected_fields=custom_metadata_fields['atmosphere']
     %}
     <hr>
 
@@ -90,7 +99,9 @@
         remove_icon_id='data_type_box_remove_',
         add_new_button_id='data_type_new',
         add_new_button_text='New Data Type',
-        form=input_object
+        form=input_object,
+        metadata_actual_name='data_type',
+        selected_fields=custom_metadata_fields['data_type']
     %}
     <hr>
 
@@ -104,7 +115,9 @@
         remove_icon_id='analysis_method_box_remove_',
         add_new_button_id='analysis_method_new',
         add_new_button_text='New Measurement/Analysis Method',
-        form=input_object
+        form=input_object,
+        metadata_actual_name='analysis_method',
+        selected_fields=custom_metadata_fields['analysis_method']
     %}        
 
     <br><br><br>
