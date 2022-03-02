@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+from os import stat
 import ckan.plugins.toolkit as toolkit
 import clevercsv
 import pandas as pd
@@ -27,6 +28,16 @@ class Helper():
             if header not in df_columns:
                 return False            
         return True
+
+    
+    @staticmethod
+    def get_metadata_value(dataframe, column_title):
+        if len(list(dataframe[column_title])) != 2:
+            return None
+        
+        return list(dataframe[column_title])[1]
+
+
 
     
 

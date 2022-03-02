@@ -100,19 +100,16 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
                 if not Helper.is_possible_to_automate(dataframe):
                     return resource
                 
-        
+                resource['material_combination'] = Helper.get_metadata_value(dataframe, 'Werkstoff-1') + ', ' + Helper.get_metadata_value(dataframe, 'Werkstoff-2')
+                resource['atmosphere'] = Helper.get_metadata_value(dataframe, 'Atmosphaere')
+                resource['data_type'] = Helper.get_metadata_value(dataframe, 'Datentyp')
+                resource['surface_preparation'] = Helper.get_metadata_value(dataframe, 'Vorbehandlung')
 
-
-
-
-
-
-
-
-
-
+  
             
         return resource
+
+        
     
     def before_create(self, context, resource):
         return resource
