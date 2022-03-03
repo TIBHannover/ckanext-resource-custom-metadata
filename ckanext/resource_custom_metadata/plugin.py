@@ -89,7 +89,7 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
     def after_create(self, context, resource):
         if resource['url_type'] == 'upload':
             dataframe = []
-            xls_dataframes = None
+            xls_dataframes = {}
             if Helper.is_csv(resource):
                 try:
                     dataframe = Helper.csv_to_dataframe(resource['id'])
@@ -100,7 +100,8 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
                 try:
                     xls_dataframes = Helper.xlsx_to_dataframe(resource['id'])
                 except:
-                    return resource
+                    # return resource
+                    raise
 
             else:
                 return resource
@@ -115,9 +116,22 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
                 resource['data_type'] = Helper.get_metadata_value(dataframe, 'Datentyp')
                 resource['surface_preparation'] = Helper.get_metadata_value(dataframe, 'Vorbehandlung')
                 resource['is_automated_processed'] = True
-
-  
+                return resource
             
+            if len(xls_dataframes.keys()) != 0:
+                # resource is xlsx
+                for sheet, sheet_dataframe in xls_dataframes.items():
+                    if not Helper.is_possible_to_automate(sheet_dataframe):
+                        print(sheet_dataframe)
+                        continue
+
+                    resource['material_combination'] = Helper.get_metadata_value(sheet_dataframe, 'Werkstoff-1') + ', ' + Helper.get_metadata_value(sheet_dataframe, 'Werkstoff-2')
+                    resource['atmosphere'] = Helper.get_metadata_value(sheet_dataframe, 'Atmosphaere')
+                    resource['data_type'] = Helper.get_metadata_value(sheet_dataframe, 'Datentyp')
+                    resource['surface_preparation'] = Helper.get_metadata_value(sheet_dataframe, 'Vorbehandlung')
+                    resource['is_automated_processed'] = True
+                    return resource
+  
         return resource
 
 

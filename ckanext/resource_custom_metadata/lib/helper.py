@@ -77,9 +77,10 @@ class Helper():
         data_sheets = pd.read_excel(file_path, sheet_name=None, header=None)
         for sheet, data_f in data_sheets.items():
             temp_df = data_f.dropna(how='all').dropna(how='all', axis=1)
-            headers = temp_df.iloc[0]
-            final_data_df  = pd.DataFrame(temp_df.values[1:], columns=headers)
-            result_df[sheet] = final_data_df
+            if len(temp_df) > 0:
+                headers = temp_df.iloc[0]
+                final_data_df  = pd.DataFrame(temp_df.values[1:], columns=headers)
+                result_df[sheet] = final_data_df
 
         return result_df
     
