@@ -18,7 +18,7 @@
           <br>
         <div class="resources-list-box">
           {% for res in resources %}
-            {% if res['is_automated_processed'] and res[metadata_actual_name] == metadata_field_value %}
+            {% if res['is_automated_processed'] and res[metadata_actual_name] == metadata_field_value and res[metadata_actual_name] != '' %}
               <label class="checkbox-container" value={{res.id}} id="{{'resource-checkbox-input-label-' ~ metadata_field_name ~ counter_id}}">
                   {{res.name}}
                   <input type="checkbox" 

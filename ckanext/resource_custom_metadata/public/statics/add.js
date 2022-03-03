@@ -56,7 +56,12 @@ $(document).ready(function(){
       let resources =  $('.resource-box');
       for(let i=0; i < resources.length; i++){
         if($(resources[i]).prop('checked') == true){
-          $(".resource-box[value=" + $(resources[i]).val() + "]").parent().hide();
+          let otherCheckBoxesWithSameId = $(".resource-box[value=" + $(resources[i]).val() + "]");
+          for(let j=0; j < otherCheckBoxesWithSameId.length; j++){
+              if ($(otherCheckBoxesWithSameId[j]).attr('field_name') ===  $(resources[i]).attr('field_name')){
+                $(otherCheckBoxesWithSameId[j]).parent().hide();
+              }
+          }
         }
       }
       for(let i=0; i < resources.length; i++){
