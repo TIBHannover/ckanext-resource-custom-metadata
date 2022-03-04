@@ -100,8 +100,7 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
                 try:
                     xls_dataframes = Helper.xlsx_to_dataframe(resource['id'])
                 except:
-                    # return resource
-                    raise
+                    return resource                    
 
             else:
                 return resource
