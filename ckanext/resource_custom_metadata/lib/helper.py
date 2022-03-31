@@ -38,9 +38,6 @@ class Helper():
         return list(dataframe[column_title])[0]
 
 
-
-    
-
     @staticmethod
     def csv_to_dataframe(resource_id):
         '''
