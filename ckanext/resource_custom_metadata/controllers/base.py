@@ -10,7 +10,7 @@ class BaseController():
 
     def index(id):
         package = toolkit.get_action('package_show')({}, {'name_or_id': id})
-        stages = ['complete', 'complete', 'active', 'uncomplete', 'uncomplete']     
+        stages = True    
         resouces = package['resources']
         custom_metadata_fields = {'material_combination': [], 'surface_preparation': [], 'atmosphere': [], 'data_type': [], 'analysis_method': []}
         for meta in custom_metadata_fields.keys():
