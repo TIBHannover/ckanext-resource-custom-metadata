@@ -17,12 +17,10 @@ hr {
     margin-top: 20px;
 }
 
-.metadata-resource-count{
-    padding: 5px !important;
-    margin-top: 20px;
-    float: left;
-    /* margin-left: 10px; */
-    /* width: 50%; */
+.custom-metadata-resource_count_edit{
     text-align: center;
     display: none;
+    cursor: pointer;
   }
+
+

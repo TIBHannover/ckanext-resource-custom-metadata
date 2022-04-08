@@ -22,8 +22,7 @@
         {% if loop.index > 1 %}
             {% snippet 'snippets/ckanext_resource_custom_metadata_resources_count.html', 
                     input_name=input_name,
-                    counter=loop.index,
-                    column_class="col-sm-2"
+                    counter=loop.index
             %}
             <div class="col-sm-1 right-side-columns">
                 <a href="#" class="box-remove-anchor" id={{remove_icon_id ~ loop.index}}>
@@ -33,8 +32,7 @@
         {% else %}
             {% snippet 'snippets/ckanext_resource_custom_metadata_resources_count.html', 
                     input_name=input_name,
-                    counter=loop.index,
-                    column_class="col-sm-3"
+                    counter=loop.index
             %}
         {% endif %}
     </div>
@@ -64,8 +62,7 @@
         {% if (loop.index + offset) > 1 %}            
             {% snippet 'snippets/ckanext_resource_custom_metadata_resources_count.html', 
                     input_name=input_name,
-                    counter=(loop.index + offset),
-                    column_class="col-sm-2"
+                    counter=(loop.index + offset)
             %}
             <div class="col-sm-1 right-side-columns">
                 <a href="#" class="box-remove-anchor" id={{remove_icon_id ~ (loop.index + offset)}}>
@@ -75,8 +72,7 @@
         {% else %}
             {% snippet 'snippets/ckanext_resource_custom_metadata_resources_count.html', 
                     input_name=input_name,
-                    counter=(loop.index + offset),
-                    column_class="col-sm-3"
+                    counter=(loop.index + offset)
             %}
         {% endif %}
     </div>

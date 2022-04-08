@@ -106,6 +106,23 @@ $(document).ready(function(){
       
     });
 
+
+    /**
+     * click the edit mark on the resource count box
+     * 
+     */
+
+     $('.custom-metadata-resource_count_edit').click(function(){
+      let id = $(this).attr('id');
+      let field_name_box_and_id = id.split('metadata-resource-count-icon-')[1];      
+      $('#resourcesModal_' + field_name_box_and_id).modal({
+        backdrop: 'static',
+        keyboard: false
+       });
+      $('#resourcesModal_' + field_name_box_and_id).modal('show'); 
+    });
+
+
 });
 
 
