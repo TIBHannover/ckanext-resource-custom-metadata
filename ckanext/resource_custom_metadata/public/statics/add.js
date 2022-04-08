@@ -5,6 +5,13 @@ $(document).ready(function(){
     for(let i=0; i<all_modals_save_btn.length; i++){
         setResourceCount(all_modals_save_btn[i]);
     }
+
+
+    $('.resource-custom-metadata-modal').on('shown.bs.modal', function () {
+        let id = $(this).attr('id');
+        let field_name_box_and_id = id.split('resourcesModal_')[1];
+        $('#modal-header-name-' + field_name_box_and_id).text($('#' + field_name_box_and_id).val());
+    })
     
 
     /**
@@ -139,7 +146,7 @@ function setResourceCount (modalBtn){
             resourceCount += 1;
         }
     }
-    console.info(resourceCount);
+    
     if(resourceCount !== 0){
       $('#metadata-resource-count-span-' + field_name_box_and_id).text(resourceCount);
       $('#metadata-resource-count-box-' + field_name_box_and_id).show();

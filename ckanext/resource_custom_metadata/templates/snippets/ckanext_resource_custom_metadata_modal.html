@@ -1,11 +1,11 @@
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="{{'#resourcesModal_' ~ metadata_field_name  ~ counter_id}}">
   {{_('Select data resource')}}
 </button>
-<div id="{{'resourcesModal_' ~ metadata_field_name  ~ counter_id}}" class="modal fade" role="dialog">
+<div id="{{'resourcesModal_' ~ metadata_field_name  ~ counter_id}}" class="resource-custom-metadata-modal modal fade" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">{{metadata_field_title}}: <div>XXXX</div> </h4>
+        <h4 class="modal-title">{{metadata_field_title}}: <div id="{{'modal-header-name-' ~ metadata_field_name ~ counter_id}}"></div> </h4>
       </div>
       <div class="modal-body">  
         <b><i>
