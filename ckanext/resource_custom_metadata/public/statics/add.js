@@ -31,7 +31,9 @@ $(document).ready(function(){
         if($('#select-all-resources-' + field_name + id).prop('checked') == true){
           $('#select-all-resources-' + field_name + id).click();
         }
-
+        
+        $('#metadata-resource-count-span-' + field_name + id).text(0);
+        $('#metadata-resource-count-box-' + field_name + id).hide();
         $('#' + field_name + id).val('');
         
     });
