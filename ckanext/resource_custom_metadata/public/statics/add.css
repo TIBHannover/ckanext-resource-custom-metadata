@@ -16,3 +16,13 @@ hr {
 .right-side-columns{
     margin-top: 20px;
 }
+
+.metadata-resource-count{
+    padding: 5px !important;
+    margin-top: 20px;
+    float: left;
+    /* margin-left: 10px; */
+    /* width: 50%; */
+    text-align: center;
+    /* display: none; */
+  }
