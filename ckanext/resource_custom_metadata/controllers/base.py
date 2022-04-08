@@ -46,7 +46,7 @@ class BaseController():
                         toolkit.get_action('resource_update')({}, resource)
         
         except:
-            raise
+            # raise
             return toolkit.abort(500, "")
 
         if Helper.is_plugin_enabled("organization_group"): # if organization_group plugin exists:

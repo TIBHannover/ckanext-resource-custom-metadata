@@ -22,17 +22,21 @@
   {% endblock %}
 
   {% set action = h.url_for('resource_custom_metadata.save_metadata', _external=True) %}
-  <div class="row">
+  
+  <input type="hidden" name="resource_count" id="resorces_count" value={{pkg_dict['resources']|length}}>
+  <form id="ownership-form" class="" method="post" action='{{action}}' data-module="basic-form" enctype="multipart/form-data">
+    <div class="row">
     <div class="col-sm-12">
         <p>
             <b>{{_('Here you can set the SFB specific metadata for your data resources (files). You can 
-                  also set them later by editing the target data resource. Please skip this part (Click Next) if 
-                  the metadata is alreday set in your data resources. ')}}</b>
+                  also set them later by editing the target data resource. <br> You can skip this part if 
+                  the metadata is already set in your data resources. ')}}</b>
+          <button class="btn btn-primary btn-sm"  id="skip-btn" name="save_skip_btn" value="finish_ownership" type="submit">{{ _('Save and continue') }}</button>
         </p>
+        
     </div>
   </div><br><br>
-  <input type="hidden" name="resource_count" id="resorces_count" value={{pkg_dict['resources']|length}}>
-  <form id="ownership-form" class="" method="post" action='{{action}}' data-module="basic-form" enctype="multipart/form-data">
+  
     <input type="hidden" name="resources_count" value={{pkg_dict['resources']|length}}>
     <input type="hidden" name="pkg_name" value={{pkg_dict['name']}}>
     <input type="hidden" name="processed_metadata_material_combination" value={{custom_metadata_fields['material_combination']|length}}>
