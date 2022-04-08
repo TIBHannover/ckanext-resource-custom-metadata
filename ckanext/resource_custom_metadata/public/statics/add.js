@@ -1,5 +1,12 @@
 $(document).ready(function(){
 
+    // ser resource count (for the data resources that already have the metadata values in them)
+    let all_modals_save_btn = $('.res_custom_metadat_modal_save');
+    for(let i=0; i<all_modals_save_btn.length; i++){
+        setResourceCount(all_modals_save_btn[i]);
+    }
+    
+
     /**
      * remove a field box
      * 
@@ -89,4 +96,37 @@ $(document).ready(function(){
           
       });
 
+
+      /**
+     * Click Add button on a modal
+     * 
+     */
+    $('.res_custom_metadat_modal_save').click(function(){
+        setResourceCount(this);
+      
+    });
+
 });
+
+
+
+function setResourceCount (modalBtn){
+    let id = $(modalBtn).attr('id');
+    let field_name_box_and_id = id.split('modal-add-btn-')[1];
+    let boxes = $('.resource-checkbox-input-' + field_name_box_and_id);
+    let resourceCount = 0;
+    for (let i=0; i < boxes.length; i++){
+        if($(boxes[i]).prop('checked') == true){
+            resourceCount += 1;
+        }
+    }
+    console.info(resourceCount);
+    if(resourceCount !== 0){
+      $('#metadata-resource-count-span-' + field_name_box_and_id).text(resourceCount);
+      $('#metadata-resource-count-box-' + field_name_box_and_id).show();
+    }
+    else{
+      $('#metadata-resource-count-span-' + field_name_box_and_id).text(0);
+      $('#metadata-resource-count-box-' + field_name_box_and_id).hide();
+    }
+}

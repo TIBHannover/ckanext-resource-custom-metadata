@@ -20,20 +20,22 @@
             %}
         </div>
         {% if loop.index > 1 %}
-            <div id={{ 'sample_resource_count-message-box_' ~ Id }} class="col-sm-2 metadata-resource-count alert alert-success">
-                <span  id={{ 'sample_resource_count-' ~ Id }}>{{default_count}}</span> &nbsp; resource(s)
-                <i class="fa fa-edit resource_count_edit" id={{ 'sample_resource_count_edit_' ~ Id }}></i>
-            </div>
+            {% snippet 'snippets/ckanext_resource_custom_metadata_resources_count.html', 
+                    input_name=input_name,
+                    counter=loop.index,
+                    column_class="col-sm-2"
+            %}
             <div class="col-sm-1 right-side-columns">
                 <a href="#" class="box-remove-anchor" id={{remove_icon_id ~ loop.index}}>
                     <i class="fa fa-minus-circle remove-metadata-icon"></i>
                 </a>
             </div>
         {% else %}
-            <div id={{ 'sample_resource_count-message-box_' ~ Id }} class="col-sm-3 metadata-resource-count alert alert-success">
-                <span  id={{ 'sample_resource_count-' ~ Id }}>{{default_count}}</span> &nbsp; resource(s)
-                <i class="fa fa-edit resource_count_edit" id={{ 'sample_resource_count_edit_' ~ Id }}></i>
-            </div>
+            {% snippet 'snippets/ckanext_resource_custom_metadata_resources_count.html', 
+                    input_name=input_name,
+                    counter=loop.index,
+                    column_class="col-sm-3"
+            %}
         {% endif %}
     </div>
 {% endfor %}
@@ -60,20 +62,22 @@
             %}
         </div>
         {% if (loop.index + offset) > 1 %}            
-            <div id={{ 'sample_resource_count-message-box_' ~ Id }} class="col-sm-3 metadata-resource-count alert alert-success">
-                <span  id={{ 'sample_resource_count-' ~ Id }}>{{default_count}}</span> &nbsp; resource(s)
-                <i class="fa fa-edit resource_count_edit" id={{ 'sample_resource_count_edit_' ~ Id }}></i>
-            </div>
+            {% snippet 'snippets/ckanext_resource_custom_metadata_resources_count.html', 
+                    input_name=input_name,
+                    counter=(loop.index + offset),
+                    column_class="col-sm-2"
+            %}
             <div class="col-sm-1 right-side-columns">
                 <a href="#" class="box-remove-anchor" id={{remove_icon_id ~ (loop.index + offset)}}>
                     <i class="fa fa-minus-circle remove-metadata-icon"></i>
                 </a>
             </div>
         {% else %}
-            <div id={{ 'sample_resource_count-message-box_' ~ Id }} class="col-sm-2 metadata-resource-count alert alert-success">
-                <span  id={{ 'sample_resource_count-' ~ Id }}>{{default_count}}</span> &nbsp; resource(s)
-                <i class="fa fa-edit resource_count_edit" id={{ 'sample_resource_count_edit_' ~ Id }}></i>
-            </div>
+            {% snippet 'snippets/ckanext_resource_custom_metadata_resources_count.html', 
+                    input_name=input_name,
+                    counter=(loop.index + offset),
+                    column_class="col-sm-3"
+            %}
         {% endif %}
     </div>
 {% endfor %}
