@@ -3,7 +3,16 @@ $(document).ready(function(){
      * Add new metadata input field for material combination
      * 
      */
-     $('#material_combination_box_1').show();
+     
+    let mc_processed_count = $('#processed_metadata_count_material_combination_').val();
+    if(parseInt(mc_processed_count) != 0){
+      for(let i=1; i <= parseInt(mc_processed_count); i++){
+        $('#material_combination_box_' + i).show();
+      }
+    }
+    else{
+      $('#material_combination_box_1').show();
+    }
      $('#mat_comb').click(function(){
        let all_visible = false;
        for(let i=1; i <= $('.material-comb-box').length; i++){
@@ -18,11 +27,23 @@ $(document).ready(function(){
       //  }
      });
 
+
+
      /**
      * Add new metadata input field for surface preparation
      * 
      */
-      $('#surface_preparation_box_1').show();
+
+      let sp_processed_count = $('#processed_metadata_count_surface_preparation_').val();
+      if(parseInt(sp_processed_count) != 0){
+        for(let i=1; i <= parseInt(sp_processed_count); i++){
+          $('#surface_preparation_box_' + i).show();
+        }
+      }
+      else{
+        $('#surface_preparation_box_1').show();
+      }
+
       $('#surface_preparation_new').click(function(){
         let all_visible = false;
         for(let i=1; i <= $('.surface-preparation-box').length; i++){
@@ -37,11 +58,22 @@ $(document).ready(function(){
         }
       });
 
+
+
       /**
      * Add new metadata input field for Atmosphere
      * 
      */
-       $('#atmosphere_box_1').show();
+       let at_processed_count = $('#processed_metadata_count_atmosphere_').val();
+       if(parseInt(at_processed_count) != 0){
+         for(let i=1; i <= parseInt(at_processed_count); i++){
+           $('#atmosphere_box_' + i).show();
+         }
+       }
+       else{
+          $('#atmosphere_box_1').show();
+       }
+       
        $('#atmosphere_new').click(function(){
          let all_visible = false;
          for(let i=1; i <= $('.atmosphere-box').length; i++){
@@ -56,11 +88,22 @@ $(document).ready(function(){
          }
        });
 
+
+
        /**
      * Add new metadata input field for Data Type
      * 
      */
-        $('#data_type_box_1').show();
+        let dt_processed_count = $('#processed_metadata_count_data_type_').val();
+        if(parseInt(dt_processed_count) != 0){
+          for(let i=1; i <= parseInt(dt_processed_count); i++){
+            $('#data_type_box_' + i).show();
+          }
+        }
+        else{
+          $('#data_type_box_1').show();
+        }
+        
         $('#data_type_new').click(function(){
           let all_visible = false;
           for(let i=1; i <= $('.data-type-box').length; i++){
@@ -75,11 +118,23 @@ $(document).ready(function(){
           }
         });
 
+
+
      /**
      * Add new metadata input field for Analysis Method
      * 
      */
-      $('#analysis_method_box_1').show();
+
+      let am_processed_count = $('#processed_metadata_count_analysis_method_').val();
+      if(parseInt(am_processed_count) != 0){
+        for(let i=1; i <= parseInt(am_processed_count); i++){
+          $('#analysis_method_box_' + i).show();
+        }
+      }
+      else{
+        $('#analysis_method_box_1').show();
+      }
+      
       $('#analysis_method_new').click(function(){
         let all_visible = false;
         for(let i=1; i <= $('.analysis-method-box').length; i++){

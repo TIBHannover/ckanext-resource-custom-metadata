@@ -1,3 +1,4 @@
+<input type="hidden" id="{{'processed_metadata_count_' ~ input_name}}" value={{selected_fields|length}}>
 {% for processed_meta in selected_fields %}
     <div class="{{box_class}}" id="{{box_id ~ loop.index}}">
         <div class="col-sm-6">
