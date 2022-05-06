@@ -24,14 +24,14 @@
   {% set action = h.url_for('resource_custom_metadata.save_metadata', _external=True) %}
   
   <input type="hidden" name="resource_count" id="resorces_count" value={{pkg_dict['resources']|length}}>
-  <form id="ownership-form" class="" method="post" action='{{action}}' data-module="basic-form" enctype="multipart/form-data">
+  <form id="resource-custom-metadata-form" method="post" action='{{action}}' data-module="basic-form" enctype="multipart/form-data">
     <div class="row">
     <div class="col-sm-12">
         <p>
             <b>{{_('Here you can set the SFB specific metadata for your data resources (files). You can 
                   also set them later by editing the target data resource. <br> You can skip this part if 
                   the metadata is already set in your data resources. ')}}</b>
-          <button class="btn btn-primary btn-sm"  id="skip-btn" name="save_skip_btn" value="finish_ownership" type="submit">{{ _('Save and continue') }}</button>
+          <button class="btn btn-primary btn-sm"  id="skip-btn" class="resource_custom_next_btn" name="save_skip_btn" value="finish_ownership" type="submit">{{ _('Save and continue') }}</button>
         </p>
         
     </div>
@@ -132,7 +132,7 @@
           {% set dest_url = h.url_for('cancel_dataset_creation.cancel_dataset', package_id=pkg_dict.id, is_draft=0, _external=True) %}
           <a class="btn btn-danger pull-left" href="{{dest_url}}" data-module="confirm-action" data-module-content="{{ _('Are you sure you want to delete this dataset?') }}">{{ _('Cancel & Delete Dataset') }}</a>        
         {% endif %}
-        <button class="btn btn-primary"  id="next-btn" name="save_btn" value="finish_ownership" type="submit">{{ _('Next') }}</button>
+        <button class="btn btn-primary" class="resource_custom_next_btn"   id="resource_custom_next_btn" name="save_btn" value="finish_ownership" type="submit">{{ _('Next') }}</button>
     </div> 
 
   </form>

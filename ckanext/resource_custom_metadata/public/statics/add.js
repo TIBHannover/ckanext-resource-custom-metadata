@@ -12,7 +12,15 @@ $(document).ready(function(){
         let field_name_box_and_id = id.split('resourcesModal_')[1];
         $('#modal-header-name-' + field_name_box_and_id).text($('#' + field_name_box_and_id).val());
     })
-    
+
+
+    /**
+     * Check for missing field and trigger warning
+     */
+    $('#resource-custom-metadata-form').submit(function(e){
+      e.preventDefault();
+    });
+
 
     /**
      * remove a field box
