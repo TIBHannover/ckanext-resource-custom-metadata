@@ -37,7 +37,7 @@
     </div>
   </div><br><br>
   
-    <input type="hidden" name="resources_count" value={{pkg_dict['resources']|length}}>
+    <input id="resource_count" type="hidden" name="resources_count" value={{pkg_dict['resources']|length}}>
     <input type="hidden" name="pkg_name" value={{pkg_dict['name']}}>
     <input type="hidden" name="processed_metadata_material_combination" value={{custom_metadata_fields['material_combination']|length}}>
     <input type="hidden" name="processed_metadata_surface_preparation" value={{custom_metadata_fields['surface_preparation']|length}}>
