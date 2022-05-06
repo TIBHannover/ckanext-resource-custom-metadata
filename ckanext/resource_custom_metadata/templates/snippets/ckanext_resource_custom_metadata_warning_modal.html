@@ -5,14 +5,15 @@
         <h4 class="modal-title">{{_('Warning: Missing metadata')}}</h4>
       </div>
       <div class="modal-body">  
-        <div class="">
+        <div class="alert alert-warning text-justify">
             <p>
                 {{_('Please note: Although these metadata are not mandatory, we strongly recommend to provide them. 
-                    These metadata allowes your fellow researchres to better find and understand your data resources.
-                    <br>These metadata are missing for the following data resources:
+                    These metadata allowes your fellow researchres to better find and understand your data resources.                    
                  ')}}
             </p>
         </div>
+        <br>
+        <strong>{{_('These metadata are missing for the following data resources:')}}</strong>
       </div>
       <div class="modal-footer">
         <button type="button" id="resource_custom_warning_stay" class="btn btn-primary" data-dismiss="modal">{{_('Skip and continue')}}</button>

@@ -45,6 +45,9 @@
     <input type="hidden" name="processed_metadata_data_type" value={{custom_metadata_fields['data_type']|length}}>
     <input type="hidden" name="processed_metadata_analysis_method" value={{custom_metadata_fields['analysis_method']|length}}>
 
+    {# warning modal #}
+    {% snippet 'snippets/ckanext_resource_custom_metadata_warning_modal.html' %}
+
     {# Material Combination field #}
     {% snippet 'snippets/ckanext_resource_custom_metadata_field.html', 
         resources=pkg_dict['resources'],

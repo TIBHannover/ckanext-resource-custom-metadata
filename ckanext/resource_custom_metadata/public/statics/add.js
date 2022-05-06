@@ -19,6 +19,8 @@ $(document).ready(function(){
      */
     $('#resource-custom-metadata-form').submit(function(e){
       e.preventDefault();
+      $('#resource_metadata_warning').modal('show');
+
     });
 
 
