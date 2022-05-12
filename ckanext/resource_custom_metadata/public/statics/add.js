@@ -34,7 +34,12 @@ $(document).ready(function(){
             already_seen_resources.push(resource_name);
           }      
           if($(resources_for_this_metadata[m]).prop('checked') == true){
-            selected_resources.push(resource_name);          
+            let name = $(resources_for_this_metadata[m]).attr('name');
+            let id = name.split("custom_metadata_")[1];            
+            if ($('#' + id).val() !== ''){
+              selected_resources.push(resource_name);          
+            }
+            
           }
         }        
         for(let n=0; n < already_seen_resources.length; n++){
