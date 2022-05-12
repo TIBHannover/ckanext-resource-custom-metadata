@@ -1,4 +1,11 @@
+$(window).on('pageshow', function(){
+  if($("#reload_page").val() === "yes"){    
+    window.location.href = window.location.href;
+  }
+});
+
 $(document).ready(function(){
+
   var skipWarning = false;
     // ser resource count (for the data resources that already have the metadata values in them)
     let all_modals_save_btn = $('.res_custom_metadat_modal_save');
@@ -28,6 +35,7 @@ $(document).ready(function(){
      */
     $('#resource-custom-metadata-form').submit(function(e){
       if(skipWarning){
+        $("#reload_page").val("yes");
         e.target.submit();
       }
       e.preventDefault();
@@ -76,6 +84,7 @@ $(document).ready(function(){
         $('#resource_metadata_warning').modal('show');
       }
       else {
+        $("#reload_page").val("yes")
         e.target.submit();
       }
       

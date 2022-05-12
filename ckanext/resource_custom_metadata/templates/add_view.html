@@ -44,6 +44,7 @@
     <input type="hidden" name="processed_metadata_atmosphere" value={{custom_metadata_fields['atmosphere']|length}}>
     <input type="hidden" name="processed_metadata_data_type" value={{custom_metadata_fields['data_type']|length}}>
     <input type="hidden" name="processed_metadata_analysis_method" value={{custom_metadata_fields['analysis_method']|length}}>
+    <input type="hidden" id="reload_page" value="no">
 
     {# warning modal #}
     {% snippet 'snippets/ckanext_resource_custom_metadata_warning_modal.html' %}
