@@ -13,6 +13,16 @@ $(document).ready(function(){
         ];
   $('.input-material_combination_').autocomplete({lookup:materials});
 
+
+   /* 
+    data types autocomplete
+  */
+    let dataTypes = [
+      {value : "Mech.-Eigenschaften" , data: "Mech.-Eigenschaften"},
+      {value : "Phys.-Eigenschaften" , data: "Phys.-Eigenschaften"}
+    ];
+$('.input-data_type_').autocomplete({lookup:dataTypes});
+
   
   
   
