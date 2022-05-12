@@ -7,7 +7,7 @@
                 label = input_label,
                 type='text',
                 value=processed_meta,
-                classes=['control-full'], attrs={'class': 'custom-resource-metadata-input'}, is_required=False) 
+                classes=['control-full'], attrs={'class': 'custom-resource-metadata-input ' ~ "input-" ~  input_name}, is_required=False) 
             }} 
         </div>
         <div class="col-sm-2 right-side-columns">
@@ -47,7 +47,7 @@
                 id=input_name ~ (loop.index + offset), 
                 label = input_label,
                 type='text',
-                classes=['control-full'], attrs={'class': 'custom-resource-metadata-input'}, is_required=False) 
+                classes=['control-full'], attrs={'class': 'custom-resource-metadata-input ' ~ "input-" ~  input_name}, is_required=False) 
             }} 
         </div>
         <div class="col-sm-2 right-side-columns">

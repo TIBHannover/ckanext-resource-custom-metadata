@@ -26,8 +26,9 @@ field-js:
     preload:
       - base/main
       - vendor/vendor
-      - vendor/bootstrap
       - vendor/jquery
-      - vendor/jquery.ui.core
+      - vendor/bootstrap      
+      - vendor/jquery.ui.core      
   contents:
+    - jquery.autocomplete.js
     - field.js
