@@ -19,8 +19,7 @@ $(document).ready(function(){
      */
     $('#resource-custom-metadata-form').submit(function(e){
       e.preventDefault();
-      $('#warning_result_box').html('')
-      let resourcesCount = $('#resource_count').val();
+      $('#warning_result_box').html('')      
       let metadataFieldsIds = ['material_combination_', 'surface_preparation_', 'atmosphere_', 'data_type_', 'analysis_method_'];
       let metadataFields = ['Material or Material Combination', 'Surface Preparation', 'Atmosphere', 'Data type', 'Measurement/Analysis Method'];
       let prefix = 'resource-checkbox-input-';
@@ -30,7 +29,7 @@ $(document).ready(function(){
         let resources_for_this_metadata = $('.' + prefix + metadataFieldsIds[i]);
         let resource_name = "";  
         let already_seen_resources = [];
-        let selected_resources = [];    
+        let selected_resources = [];
         for(let m=0; m < resources_for_this_metadata.length; m++){
           resource_name = $(resources_for_this_metadata[m]).attr("resource_name");
           if(!already_seen_resources.includes(resource_name)){
@@ -39,13 +38,15 @@ $(document).ready(function(){
           if($(resources_for_this_metadata[m]).prop('checked') == true){
             selected_resources.push(resource_name);          
           }
-        }        
+        }
+        $('#warning_result_box').append('<ul>');
         for(let n=0; n < already_seen_resources.length; n++){
           if(!selected_resources.includes(already_seen_resources[n])){
-            $('#warning_result_box').append(already_seen_resources[n]);
-            $('#warning_result_box').append('<br>');
+            $('#warning_result_box').append("<li class='missing-resource-name'>" + already_seen_resources[n] + "</li>");            
           }
-        }        
+        }
+        $('#warning_result_box').append('</ul>');  
+        $('#warning_result_box').append('<br>');       
       }
     
       $('#resource_metadata_warning').modal('show');

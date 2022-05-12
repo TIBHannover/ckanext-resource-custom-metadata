@@ -23,4 +23,7 @@ hr {
     cursor: pointer;
   }
 
+  .missing-resource-name{
+      margin-left: 40px;
+  }
 
