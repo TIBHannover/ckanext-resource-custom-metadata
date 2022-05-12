@@ -1,5 +1,5 @@
 $(document).ready(function(){
-
+  var skipWarning = false;
     // ser resource count (for the data resources that already have the metadata values in them)
     let all_modals_save_btn = $('.res_custom_metadat_modal_save');
     for(let i=0; i<all_modals_save_btn.length; i++){
@@ -13,16 +13,29 @@ $(document).ready(function(){
         $('#modal-header-name-' + field_name_box_and_id).text($('#' + field_name_box_and_id).val());
     })
 
+    /**
+     * Click on skip warning in the warning modal
+     */
+    $('#resource_custom_warning_skip').click(function(){
+        skipWarning = true;
+        $('#resource-custom-metadata-form').submit();
+    });
+
+
 
     /**
      * Check for missing field and trigger warning
      */
     $('#resource-custom-metadata-form').submit(function(e){
+      if(skipWarning){
+        e.target.submit();
+      }
       e.preventDefault();
       $('#warning_result_box').html('')      
       let metadataFieldsIds = ['material_combination_', 'surface_preparation_', 'atmosphere_', 'data_type_', 'analysis_method_'];
       let metadataFields = ['Material or Material Combination', 'Surface Preparation', 'Atmosphere', 'Data type', 'Measurement/Analysis Method'];
       let prefix = 'resource-checkbox-input-';
+      let showWarning = false;
       for(let i=0; i < metadataFieldsIds.length; i++){       
         let resources_for_this_metadata = $('.' + prefix + metadataFieldsIds[i]);
         let resource_name = "";  
@@ -45,6 +58,7 @@ $(document).ready(function(){
         for(let n=0; n < already_seen_resources.length; n++){
           if(!selected_resources.includes(already_seen_resources[n])){
             if (n === 0){
+              showWarning = true;
               $('#warning_result_box').append("<strong>" +  metadataFields[i] + "</strong>");
               $('#warning_result_box').append('<br>');
               $('#warning_result_box').append('<ul>');
@@ -57,9 +71,14 @@ $(document).ready(function(){
           }
         }      
       }
-    
-      $('#resource_metadata_warning').modal('show');
-
+      
+      if(showWarning){
+        $('#resource_metadata_warning').modal('show');
+      }
+      else {
+        e.target.submit();
+      }
+      
     });
 
 
