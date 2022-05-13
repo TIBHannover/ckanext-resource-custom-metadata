@@ -9,21 +9,32 @@ $(document).ready(function(){
           {value : "Stahl" , data: "Stahl"},
           {value : "Titan" , data: "Titan"},
           {value : "Titan_Pulver" , data: "Titan_Pulver"}
-
         ];
   $('.input-material_combination_').autocomplete({lookup:materials});
 
 
-   /* 
+  /* 
     data types autocomplete
   */
     let dataTypes = [
       {value : "Mech.-Eigenschaften" , data: "Mech.-Eigenschaften"},
       {value : "Phys.-Eigenschaften" , data: "Phys.-Eigenschaften"}
     ];
-$('.input-data_type_').autocomplete({lookup:dataTypes});
+  $('.input-data_type_').autocomplete({lookup:dataTypes});
 
   
+  /* 
+    surface prepration autocomplete
+  */
+    let surfaces = [
+      {value : "Oberflächenbehandlung" , data: "Oberflächenbehandlung"},
+      {value : "Buersten" , data: "Buersten"},
+      {value : "Chemisch" , data: "Chemisch"},
+      {value : "Plasma" , data: "Plasma"},
+      {value : "Schleifen" , data: "Schleifen"},
+      {value : "Unbehandelt" , data: "Unbehandelt"}
+    ];
+  $('.input-surface_preparation_').autocomplete({lookup:surfaces});
   
   
   
