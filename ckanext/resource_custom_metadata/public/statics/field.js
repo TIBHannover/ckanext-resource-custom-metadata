@@ -35,6 +35,20 @@ $(document).ready(function(){
       {value : "Unbehandelt" , data: "Unbehandelt"}
     ];
   $('.input-surface_preparation_').autocomplete({lookup:surfaces});
+
+
+   /* 
+    Atmosphere autocomplete
+  */
+    let atmospheres = [
+      {value : "Ar" , data: "Ar"},
+      {value : "Ar-Silan" , data: "Ar-Silan"},
+      {value : "H2" , data: "H2"},
+      {value : "H2-Silan" , data: "H2-Silan"},
+      {value : "Schleifen" , data: "Schleifen"},
+      {value : "Normal-O2" , data: "Normal-O2"}
+    ];
+  $('.input-atmosphere_').autocomplete({lookup:atmospheres});
   
   
   
