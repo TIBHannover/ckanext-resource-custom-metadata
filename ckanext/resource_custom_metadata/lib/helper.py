@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+from multiprocessing.connection import answer_challenge
 from os import stat
 import ckan.plugins.toolkit as toolkit
 import clevercsv
@@ -7,7 +8,8 @@ import pandas as pd
 
 
 RESOURCE_DIR = toolkit.config['ckan.storage_path'] + '/resources/'
-STANDARD_HEADERS = ['X-Kategorie', 'Y-Kategorie', 'Datentyp', 'Werkstoff-1', 'Werkstoff-2', 'Atmosphaere', 'Vorbehandlung']
+STANDARD_HEADERS_V1 = ['X-Kategorie', 'Y-Kategorie', 'Datentyp', 'Werkstoff-1', 'Werkstoff-2', 'Atmosphaere', 'Vorbehandlung']
+STANDARD_HEADERS_V2 = ['X-Category', 'Y-Category', 'Measurement/Analysis Method', 'Material or Material Combination', 'Atmosphere', 'Data type (mechanical, chemical ...)', 'Surface Preparation']
 
 
 class Helper():
@@ -22,16 +24,42 @@ class Helper():
     @staticmethod
     def is_possible_to_automate(resource_df):
         df_columns = resource_df.columns
-        if len(df_columns) != len(STANDARD_HEADERS):
-            return False
-        for header in df_columns:
-            if header.strip() not in STANDARD_HEADERS:
-                return False
-        return True
+        df_columns = [i.strip() for i in df_columns]
+        answer = True        
+        for annot in STANDARD_HEADERS_V1:
+            if annot not in df_columns:
+                answer = False
+                break
+        
+        if answer:
+            return [True, "v1"]
+                
+        for col in df_columns:
+            print(col)
+            print(STANDARD_HEADERS_V2)
+            if "Data type" in col:
+                if "Data type (mechanical, chemical " not in col:
+                    return [False, ""]
+            else:
+                if col not in STANDARD_HEADERS_V2:
+                    return [False, ""]
+            
+        
+        return [True, "v2"]
+        
 
     
     @staticmethod
     def get_metadata_value(dataframe, column_title):
+        if column_title == "Data type (mechanical, chemical ...)":
+            for col in dataframe.columns:
+                if "Data type (mechanical, chemical" in col:
+                    if len(list(dataframe[col])) < 1:
+                        return ''
+                    
+                    return list(dataframe[col])[0]
+
+
         if len(list(dataframe[column_title])) < 1:
             return ''
         
