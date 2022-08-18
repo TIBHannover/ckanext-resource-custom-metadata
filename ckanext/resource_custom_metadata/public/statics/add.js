@@ -6,7 +6,7 @@ $(window).on('pageshow', function(){
 
 $(document).ready(function(){
 
-  var skipWarning = false;
+    var skipWarning = false;
     // ser resource count (for the data resources that already have the metadata values in them)
     let all_modals_save_btn = $('.res_custom_metadat_modal_save');
     for(let i=0; i<all_modals_save_btn.length; i++){
@@ -62,22 +62,19 @@ $(document).ready(function(){
             }
             
           }
-        }        
+        }
+      
+        $('#warning_result_box').append("<strong>" +  metadataFields[i] + "</strong>");
+        $('#warning_result_box').append('<br>');
+        $('#warning_result_box').append('<ul>');
         for(let n=0; n < already_seen_resources.length; n++){
           if(!selected_resources.includes(already_seen_resources[n])){
-            if (n === 0){
-              showWarning = true;
-              $('#warning_result_box').append("<strong>" +  metadataFields[i] + "</strong>");
-              $('#warning_result_box').append('<br>');
-              $('#warning_result_box').append('<ul>');
-            }            
-            $('#warning_result_box').append("<li class='missing-resource-name'>" + already_seen_resources[n] + "</li>");
-            if (n === already_seen_resources.length - 1){
-              $('#warning_result_box').append('</ul>');  
-              $('#warning_result_box').append('<br>'); 
-            }
+            showWarning = true;                            
+            $('#warning_result_box').append("<li class='missing-resource-name'>" + already_seen_resources[n] + "</li>");            
           }
-        }      
+        }
+        $('#warning_result_box').append('</ul>');  
+        $('#warning_result_box').append('<br>'); 
       }
       
       if(showWarning){
