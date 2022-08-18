@@ -18,27 +18,35 @@
         id='surface_preparation_id',
         label=_('Surface Preparation'), 
         value=data.surface_preparation,  
-        classes=['control-full']) 
+        classes=['control-full'],
+        attrs={'class': 'custom-resource-metadata-input input-surface_preparation_'}
+        ) 
     }}
 
     {{ form.input('atmosphere',
         id='atmosphere_id',
         label=_('Atmosphere'), 
         value=data.atmosphere,  
-        classes=['control-full']) 
+        classes=['control-full'],
+        attrs={'class': 'custom-resource-metadata-input input-atmosphere_'}
+        ) 
     }}
 
     {{ form.input('data_type',
         id='data_type_id',
         label=_('Data type (mechanical, chemical ...)'), 
         value=data.data_type,  
-        classes=['control-full']) 
+        classes=['control-full'],
+        attrs={'class': 'custom-resource-metadata-input input-data_type_'}
+        ) 
     }}
 
     {{ form.input('analysis_method',
         id='analysis_method_id',
         label=_('Measurement/Analysis method'), 
         value=data.analysis_method,  
-        classes=['control-full']) 
+        classes=['control-full'],
+        attrs={'class': 'custom-resource-metadata-input'}
+        ) 
     }}
 {% endblock  %}
