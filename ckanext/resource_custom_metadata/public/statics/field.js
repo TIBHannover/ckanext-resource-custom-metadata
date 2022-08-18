@@ -10,8 +10,8 @@ $(document).ready(function(){
           {value : "Titan" , data: "Titan"},
           {value : "Titan_Pulver" , data: "Titan_Pulver"}
         ];
-  $('.input-material_combination_').autocomplete({lookup:materials});
-
+  $('.input-material_combination_').autocomplete({lookup:materials}); 
+  // $('#material_combination_id').autocomplete({lookup:materials});
 
   /* 
     data types autocomplete
