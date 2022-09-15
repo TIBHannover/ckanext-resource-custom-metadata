@@ -93,9 +93,10 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
             if Helper.is_csv(resource):
                 try:
                     dataframe = Helper.csv_to_dataframe(resource['id'])
-                except:
                     return resource
-
+                except:
+                    return resource  
+                    
             elif Helper.is_xlsx(resource):
                 try:
                     xls_dataframes = Helper.xlsx_to_dataframe(resource['id'])
