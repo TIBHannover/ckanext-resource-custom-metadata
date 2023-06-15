@@ -36,6 +36,7 @@ $(document).ready(function(){
     $('#resource-custom-metadata-form').submit(function(e){
       if(skipWarning){
         $("#reload_page").val("yes");
+        $('#modal-skip-cont-loading').css('display', 'inline-block');
         e.target.submit();
       }
       e.preventDefault();
@@ -80,8 +81,10 @@ $(document).ready(function(){
       if(showWarning){
         $('#resource_metadata_warning').modal('show');
       }
-      else {
+      else {        
         $("#reload_page").val("yes")
+        $('#custom-metadata-next-loading').css('display', 'inline-block');
+        $('#custom-metadata-save-cont-loading').css('display', 'inline-block');
         e.target.submit();
       }
       

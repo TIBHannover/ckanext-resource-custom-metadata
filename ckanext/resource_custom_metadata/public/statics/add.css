@@ -27,6 +27,11 @@ hr {
       margin-left: 40px;
   }
 
+  .fa.fa-spinner.fa-spin{
+    font-size: 14px;
+    display: none;
+  }
+
 /* 
   source: https://github.com/devbridge/jQuery-Autocomplete/blob/master/content/styles.css
 */
