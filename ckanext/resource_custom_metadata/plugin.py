@@ -87,78 +87,82 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
     # IResourceController
 
     def after_create(self, context, resource):
-        if resource['url_type'] == 'upload':
-            dataframe = []
-            xls_dataframes = {}
-            if Helper.is_csv(resource):
-                try:
-                    dataframe = Helper.csv_to_dataframe(resource['id'])
-                    return resource
-                except:
-                    return resource  
-                    
-            elif Helper.is_xlsx(resource):
-                try:
-                    xls_dataframes = Helper.xlsx_to_dataframe(resource['id'])
-                except:
-                    return resource                    
+        try:
+            if resource['url_type'] == 'upload':
+                dataframe = []
+                xls_dataframes = {}
+                if Helper.is_csv(resource):
+                    try:
+                        dataframe = Helper.csv_to_dataframe(resource['id'])
+                        return resource
+                    except:
+                        # return resource  
+                        raise
+                        
+                elif Helper.is_xlsx(resource):
+                    try:
+                        xls_dataframes = Helper.xlsx_to_dataframe(resource['id'])
+                    except:
+                        return resource                    
 
-            else:
-                return resource
-            
-            if len(dataframe) != 0:
-                # resource is csv
-                is_autoamted = Helper.is_possible_to_automate(dataframe)                
-                if not is_autoamted[0]:
-                    # not annotated
+                else:
                     return resource
                 
-                if is_autoamted[1] == "v1":
-                    # version 1 of annotation
-                    resource['material_combination'] = Helper.get_metadata_value(dataframe, 'Werkstoff-1') + ', ' + Helper.get_metadata_value(dataframe, 'Werkstoff-2')
-                    resource['atmosphere'] = Helper.get_metadata_value(dataframe, 'Atmosphaere')
-                    resource['data_type'] = Helper.get_metadata_value(dataframe, 'Datentyp')
-                    resource['surface_preparation'] = Helper.get_metadata_value(dataframe, 'Vorbehandlung')
-                    resource['is_automated_processed'] = True
-                    return resource
-                
-                elif is_autoamted[1] == "v2":
-                    # version 2 of annotation
-                    resource['material_combination'] = Helper.get_metadata_value(dataframe, 'Material or Material Combination')
-                    resource['atmosphere'] = Helper.get_metadata_value(dataframe, 'Atmosphere')
-                    resource['data_type'] = Helper.get_metadata_value(dataframe, 'Data type (mechanical, chemical ...)')
-                    resource['surface_preparation'] = Helper.get_metadata_value(dataframe, 'Surface Preparation')
-                    resource['analysis_method'] = Helper.get_metadata_value(dataframe, 'Measurement/Analysis Method')
-                    resource['is_automated_processed'] = True
-                    return resource
-            
-            elif len(xls_dataframes.keys()) != 0:
-                # resource is xlsx
-                for sheet, sheet_dataframe in xls_dataframes.items():
-                    is_autoamted = Helper.is_possible_to_automate(sheet_dataframe)
-                    if not is_autoamted[0]:                        
-                        continue
+                if len(dataframe) != 0:
+                    # resource is csv
+                    is_autoamted = Helper.is_possible_to_automate(dataframe)                
+                    if not is_autoamted[0]:
+                        # not annotated
+                        return resource
                     
                     if is_autoamted[1] == "v1":
                         # version 1 of annotation
-                        resource['material_combination'] = Helper.get_metadata_value(sheet_dataframe, 'Werkstoff-1') + ', ' + Helper.get_metadata_value(sheet_dataframe, 'Werkstoff-2')
-                        resource['atmosphere'] = Helper.get_metadata_value(sheet_dataframe, 'Atmosphaere')
-                        resource['data_type'] = Helper.get_metadata_value(sheet_dataframe, 'Datentyp')
-                        resource['surface_preparation'] = Helper.get_metadata_value(sheet_dataframe, 'Vorbehandlung')
+                        resource['material_combination'] = Helper.get_metadata_value(dataframe, 'Werkstoff-1') + ', ' + Helper.get_metadata_value(dataframe, 'Werkstoff-2')
+                        resource['atmosphere'] = Helper.get_metadata_value(dataframe, 'Atmosphaere')
+                        resource['data_type'] = Helper.get_metadata_value(dataframe, 'Datentyp')
+                        resource['surface_preparation'] = Helper.get_metadata_value(dataframe, 'Vorbehandlung')
                         resource['is_automated_processed'] = True
                         return resource
                     
                     elif is_autoamted[1] == "v2":
                         # version 2 of annotation
-                        resource['material_combination'] = Helper.get_metadata_value(sheet_dataframe, 'Material or Material Combination')
-                        resource['atmosphere'] = Helper.get_metadata_value(sheet_dataframe, 'Atmosphere')
-                        resource['data_type'] = Helper.get_metadata_value(sheet_dataframe, 'Data type (mechanical, chemical ...)')
-                        resource['surface_preparation'] = Helper.get_metadata_value(sheet_dataframe, 'Surface Preparation')
-                        resource['analysis_method'] = Helper.get_metadata_value(sheet_dataframe, 'Measurement/Analysis Method')
+                        resource['material_combination'] = Helper.get_metadata_value(dataframe, 'Material or Material Combination')
+                        resource['atmosphere'] = Helper.get_metadata_value(dataframe, 'Atmosphere')
+                        resource['data_type'] = Helper.get_metadata_value(dataframe, 'Data type (mechanical, chemical ...)')
+                        resource['surface_preparation'] = Helper.get_metadata_value(dataframe, 'Surface Preparation')
+                        resource['analysis_method'] = Helper.get_metadata_value(dataframe, 'Measurement/Analysis Method')
                         resource['is_automated_processed'] = True
                         return resource
-  
-        return resource
+                
+                elif len(xls_dataframes.keys()) != 0:
+                    # resource is xlsx
+                    for sheet, sheet_dataframe in xls_dataframes.items():
+                        is_autoamted = Helper.is_possible_to_automate(sheet_dataframe)
+                        if not is_autoamted[0]:                        
+                            continue
+                        
+                        if is_autoamted[1] == "v1":
+                            # version 1 of annotation
+                            resource['material_combination'] = Helper.get_metadata_value(sheet_dataframe, 'Werkstoff-1') + ', ' + Helper.get_metadata_value(sheet_dataframe, 'Werkstoff-2')
+                            resource['atmosphere'] = Helper.get_metadata_value(sheet_dataframe, 'Atmosphaere')
+                            resource['data_type'] = Helper.get_metadata_value(sheet_dataframe, 'Datentyp')
+                            resource['surface_preparation'] = Helper.get_metadata_value(sheet_dataframe, 'Vorbehandlung')
+                            resource['is_automated_processed'] = True
+                            return resource
+                        
+                        elif is_autoamted[1] == "v2":
+                            # version 2 of annotation
+                            resource['material_combination'] = Helper.get_metadata_value(sheet_dataframe, 'Material or Material Combination')
+                            resource['atmosphere'] = Helper.get_metadata_value(sheet_dataframe, 'Atmosphere')
+                            resource['data_type'] = Helper.get_metadata_value(sheet_dataframe, 'Data type (mechanical, chemical ...)')
+                            resource['surface_preparation'] = Helper.get_metadata_value(sheet_dataframe, 'Surface Preparation')
+                            resource['analysis_method'] = Helper.get_metadata_value(sheet_dataframe, 'Measurement/Analysis Method')
+                            resource['is_automated_processed'] = True
+                            return resource
+    
+            return resource
+        except:
+            return resource
 
 
     
