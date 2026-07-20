@@ -1,8 +1,23 @@
+import logging
+
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
+import pandas as pd
 from ckanext.resource_custom_metadata.lib.helper import Helper
 from ckanext.resource_custom_metadata.controllers.base import BaseController
 from flask import Blueprint
+
+
+log = logging.getLogger(__name__)
+
+CUSTOM_RESOURCE_FIELDS = [
+    'material_combination',
+    'surface_preparation',
+    'atmosphere',
+    'data_type',
+    'analysis_method',
+    'is_automated_processed',
+]
 
 
 class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
@@ -47,13 +62,8 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
         return []
 
     def _custom_resource_schema(self, schema):
-        # Add our custom_resource_text metadata field to the schema
-        schema['resources'].update({'material_combination' : [toolkit.get_validator('ignore_missing')] })
-        schema['resources'].update({'surface_preparation' : [toolkit.get_validator('ignore_missing')] })
-        schema['resources'].update({'atmosphere' : [toolkit.get_validator('ignore_missing')] })
-        schema['resources'].update({'data_type' : [toolkit.get_validator('ignore_missing')] })
-        schema['resources'].update({'analysis_method' : [toolkit.get_validator('ignore_missing')] })
-        schema['resources'].update({'is_automated_processed' : [toolkit.get_validator('ignore_missing')] })
+        for field in CUSTOM_RESOURCE_FIELDS:
+            schema['resources'].update({field: [toolkit.get_validator('ignore_missing')]})
         return schema
 
     def create_package_schema(self):
@@ -68,12 +78,7 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
 
     def show_package_schema(self):
         schema = super(ResourceCustomMetadataPlugin, self).show_package_schema()
-        schema['resources'].update({'material_combination' : [toolkit.get_validator('ignore_missing')] })
-        schema['resources'].update({'surface_preparation' : [toolkit.get_validator('ignore_missing')] })
-        schema['resources'].update({'atmosphere' : [toolkit.get_validator('ignore_missing')] })
-        schema['resources'].update({'data_type' : [toolkit.get_validator('ignore_missing')] })
-        schema['resources'].update({'analysis_method' : [toolkit.get_validator('ignore_missing')] })
-        schema['resources'].update({'is_automated_processed' : [toolkit.get_validator('ignore_missing')] })
+        schema = self._custom_resource_schema(schema)
         return schema
 
 
@@ -86,100 +91,98 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
 
     # IResourceController
 
-    def after_create(self, context, resource):
+    def before_resource_create(self, context, resource):
+        pass
+
+    def after_resource_create(self, context, resource):
+        self._process_and_persist_resource_metadata(context, resource)
+
+    def before_resource_update(self, context, current, resource):
+        pass
+
+    def after_resource_update(self, context, resource):
+        self._process_and_persist_resource_metadata(context, resource)
+
+    def before_resource_delete(self, context, resource, resources):
+        pass
+
+    def after_resource_delete(self, context, resources):
+        pass
+
+    def before_resource_show(self, resource_dict):
+        pass
+
+    def _process_and_persist_resource_metadata(self, context, resource):
+        if context.get('resource_custom_metadata_skip_automation'):
+            return
+
+        metadata = self._extract_metadata_from_resource(resource)
+        if not metadata:
+            return
+
+        patch = {'id': resource['id']}
+        for field, value in metadata.items():
+            if resource.get(field) != value:
+                patch[field] = value
+
+        if len(patch) == 1:
+            return
+
+        patch_context = dict(context)
+        patch_context['resource_custom_metadata_skip_automation'] = True
+        toolkit.get_action('resource_patch')(patch_context, patch)
+        resource.update({field: patch[field] for field in patch if field != 'id'})
+
+    def _extract_metadata_from_resource(self, resource):
+        if resource.get('url_type') != 'upload':
+            return {}
+
         try:
-            if resource['url_type'] == 'upload':
-                dataframe = []
-                xls_dataframes = {}
-                if Helper.is_csv(resource):
-                    try:
-                        dataframe = Helper.csv_to_dataframe(resource['id'])
-                        return resource
-                    except:
-                        # return resource  
-                        raise
-                        
-                elif Helper.is_xlsx(resource):
-                    try:
-                        xls_dataframes = Helper.xlsx_to_dataframe(resource['id'])
-                    except:
-                        return resource                    
+            if Helper.is_csv(resource):
+                dataframe = Helper.csv_to_dataframe(resource['id'])
+                return self._metadata_from_dataframe(dataframe)
 
-                else:
-                    return resource
-                
-                if len(dataframe) != 0:
-                    # resource is csv
-                    is_autoamted = Helper.is_possible_to_automate(dataframe)                
-                    if not is_autoamted[0]:
-                        # not annotated
-                        return resource
-                    
-                    if is_autoamted[1] == "v1":
-                        # version 1 of annotation
-                        resource['material_combination'] = Helper.get_metadata_value(dataframe, 'Werkstoff-1') + ', ' + Helper.get_metadata_value(dataframe, 'Werkstoff-2')
-                        resource['atmosphere'] = Helper.get_metadata_value(dataframe, 'Atmosphaere')
-                        resource['data_type'] = Helper.get_metadata_value(dataframe, 'Datentyp')
-                        resource['surface_preparation'] = Helper.get_metadata_value(dataframe, 'Vorbehandlung')
-                        resource['is_automated_processed'] = True
-                        return resource
-                    
-                    elif is_autoamted[1] == "v2":
-                        # version 2 of annotation
-                        resource['material_combination'] = Helper.get_metadata_value(dataframe, 'Material or Material Combination')
-                        resource['atmosphere'] = Helper.get_metadata_value(dataframe, 'Atmosphere')
-                        resource['data_type'] = Helper.get_metadata_value(dataframe, 'Data type (mechanical, chemical ...)')
-                        resource['surface_preparation'] = Helper.get_metadata_value(dataframe, 'Surface Preparation')
-                        resource['analysis_method'] = Helper.get_metadata_value(dataframe, 'Measurement/Analysis Method')
-                        resource['is_automated_processed'] = True
-                        return resource
-                
-                elif len(xls_dataframes.keys()) != 0:
-                    # resource is xlsx
-                    for sheet, sheet_dataframe in xls_dataframes.items():
-                        is_autoamted = Helper.is_possible_to_automate(sheet_dataframe)
-                        if not is_autoamted[0]:                        
-                            continue
-                        
-                        if is_autoamted[1] == "v1":
-                            # version 1 of annotation
-                            resource['material_combination'] = Helper.get_metadata_value(sheet_dataframe, 'Werkstoff-1') + ', ' + Helper.get_metadata_value(sheet_dataframe, 'Werkstoff-2')
-                            resource['atmosphere'] = Helper.get_metadata_value(sheet_dataframe, 'Atmosphaere')
-                            resource['data_type'] = Helper.get_metadata_value(sheet_dataframe, 'Datentyp')
-                            resource['surface_preparation'] = Helper.get_metadata_value(sheet_dataframe, 'Vorbehandlung')
-                            resource['is_automated_processed'] = True
-                            return resource
-                        
-                        elif is_autoamted[1] == "v2":
-                            # version 2 of annotation
-                            resource['material_combination'] = Helper.get_metadata_value(sheet_dataframe, 'Material or Material Combination')
-                            resource['atmosphere'] = Helper.get_metadata_value(sheet_dataframe, 'Atmosphere')
-                            resource['data_type'] = Helper.get_metadata_value(sheet_dataframe, 'Data type (mechanical, chemical ...)')
-                            resource['surface_preparation'] = Helper.get_metadata_value(sheet_dataframe, 'Surface Preparation')
-                            resource['analysis_method'] = Helper.get_metadata_value(sheet_dataframe, 'Measurement/Analysis Method')
-                            resource['is_automated_processed'] = True
-                            return resource
-    
-            return resource
-        except:
-            return resource
+            if Helper.is_xlsx(resource):
+                xls_dataframes = Helper.xlsx_to_dataframe(resource['id'])
+                for sheet_name, sheet_dataframe in xls_dataframes.items():
+                    metadata = self._metadata_from_dataframe(sheet_dataframe)
+                    if metadata:
+                        return metadata
+                return {}
+        except (FileNotFoundError, OSError, UnicodeDecodeError, ValueError, KeyError, pd.errors.ParserError) as exc:
+            log.info(
+                'Could not automate custom metadata for resource %s: %s',
+                resource.get('id'),
+                exc,
+            )
 
+        return {}
 
-    
-    def before_create(self, context, resource):
-        return resource
+    def _metadata_from_dataframe(self, dataframe):
+        if dataframe is None or len(dataframe) == 0:
+            return {}
 
-    def before_update(self, context, current, resource):
-        return resource
-    
-    def after_update(self, context, resource):
-        return resource
-    
-    def before_delete(self, context, resource, resources):
-        return resources
-    
-    def after_delete(self, context, resources):
-        return resources
-    
-    def before_show(self, resource_dict):
-        return resource_dict
+        is_automated = Helper.is_possible_to_automate(dataframe)
+        if not is_automated[0]:
+            return {}
+
+        if is_automated[1] == "v1":
+            return {
+                'material_combination': Helper.get_metadata_value(dataframe, 'Werkstoff-1') + ', ' + Helper.get_metadata_value(dataframe, 'Werkstoff-2'),
+                'atmosphere': Helper.get_metadata_value(dataframe, 'Atmosphaere'),
+                'data_type': Helper.get_metadata_value(dataframe, 'Datentyp'),
+                'surface_preparation': Helper.get_metadata_value(dataframe, 'Vorbehandlung'),
+                'is_automated_processed': True,
+            }
+
+        if is_automated[1] == "v2":
+            return {
+                'material_combination': Helper.get_metadata_value(dataframe, 'Material or Material Combination'),
+                'atmosphere': Helper.get_metadata_value(dataframe, 'Atmosphere'),
+                'data_type': Helper.get_metadata_value(dataframe, 'Data type (mechanical, chemical ...)'),
+                'surface_preparation': Helper.get_metadata_value(dataframe, 'Surface Preparation'),
+                'analysis_method': Helper.get_metadata_value(dataframe, 'Measurement/Analysis Method'),
+                'is_automated_processed': True,
+            }
+
+        return {}

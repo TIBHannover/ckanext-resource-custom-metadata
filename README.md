@@ -9,7 +9,8 @@ Compatibility with core CKAN versions:
 
 | CKAN version    | Compatible?   |
 | --------------- | ------------- |
-|  2.9 | Yes    |
+|  2.10 | Yes    |
+|  2.9 | No |
 | earlier | No |           |
 
 
@@ -23,11 +24,10 @@ To install ckanext-resource-custom-metadata:
 
 2. Clone the source and install it on the virtualenv
 
-        > git clone https://git.tib.eu lab-linked-scientific-knowledge/sfb-inf/ckanext-resource-custom-metadata.git
+        > git clone https://github.com/TIBHannover/ckanext-resource-custom-metadata.git
         > cd ckanext-resource-custom-metadata
-        > pip install -e .
         > pip install -r requirements.txt
-        > python setup.py develop
+        > pip install -e .
 
 3. Add `resource_custom_metadata` to the `ckan.plugins` setting in your CKAN
    config file (by default the config file is located at
@@ -44,7 +44,7 @@ To install ckanext-resource-custom-metadata:
 
 To run the tests, do:
 
-    pytest --ckan-ini=test.ini
+    pytest --ckan-ini=test.ini --cov=ckanext.resource_custom_metadata --disable-warnings ckanext/resource_custom_metadata
 
 
 
