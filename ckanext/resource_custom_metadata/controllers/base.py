@@ -30,15 +30,22 @@ class BaseController():
 
     def save_metadata():
         metadata_fields = ['material_combination', 'surface_preparation', 'atmosphere', 'data_type', 'analysis_method']
-        resource_count = request.form.get('resources_count')
         package_name = request.form.get('pkg_name')
         
         try:
             for field in metadata_fields:
-                custom_metadata_fields_length = request.form.get('processed_metadata_' + field)
-                for i in range(1, int(resource_count) + int(custom_metadata_fields_length) + 1):
-                    resource_ids = request.form.getlist('custom_metadata_' + field + '_' + str(i))
-                    field_text = request.form.get(field + '_' + str(i))
+                input_prefix = field + '_'
+                field_inputs = (
+                    key for key in request.form.keys()
+                    if key.startswith(input_prefix)
+                    and key[len(input_prefix):].isdigit()
+                )
+                for input_name in field_inputs:
+                    index = input_name[len(input_prefix):]
+                    resource_ids = request.form.getlist(
+                        'custom_metadata_' + field + '_' + index
+                    )
+                    field_text = request.form.get(input_name)
 
                     for res_id in resource_ids:                       
                         resource = toolkit.get_action('resource_show')({}, {'id': res_id})
@@ -55,6 +62,5 @@ class BaseController():
         elif Helper.is_plugin_enabled("media_wiki"): # if media_wiki plugin exists
             return redirect(h.url_for('media_wiki.machines_view', id=str(package_name) ,  _external=True)) 
 
-        return redirect(h.url_for('dataset.read', id=str(package_name) ,  _external=True)) 
-        
+        return redirect(h.url_for('dataset.read', id=str(package_name) ,  _external=True))
         

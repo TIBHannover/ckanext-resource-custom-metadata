@@ -23,7 +23,7 @@
 
   {% set action = h.url_for('resource_custom_metadata.save_metadata', _external=True) %}
   
-  <input type="hidden" name="resource_count" id="resorces_count" value={{pkg_dict['resources']|length}}>
+  <input type="hidden" name="resource_count" id="resorces_count" value="{{ pkg_dict['resources']|length }}">
   <form id="resource-custom-metadata-form" method="post" action='{{action}}' data-module="basic-form" enctype="multipart/form-data">
     <div class="row">
     <div class="col-sm-12">
@@ -37,13 +37,8 @@
     </div>
   </div><br><br>
   
-    <input id="resource_count" type="hidden" name="resources_count" value={{pkg_dict['resources']|length}}>
-    <input type="hidden" name="pkg_name" value={{pkg_dict['name']}}>
-    <input type="hidden" name="processed_metadata_material_combination" value={{custom_metadata_fields['material_combination']|length}}>
-    <input type="hidden" name="processed_metadata_surface_preparation" value={{custom_metadata_fields['surface_preparation']|length}}>
-    <input type="hidden" name="processed_metadata_atmosphere" value={{custom_metadata_fields['atmosphere']|length}}>
-    <input type="hidden" name="processed_metadata_data_type" value={{custom_metadata_fields['data_type']|length}}>
-    <input type="hidden" name="processed_metadata_analysis_method" value={{custom_metadata_fields['analysis_method']|length}}>
+    <input id="resource_count" type="hidden" name="resources_count" value="{{ pkg_dict['resources']|length }}">
+    <input type="hidden" name="pkg_name" value="{{ pkg_dict['name'] }}">
     <input type="hidden" id="reload_page" value="no">
 
     {# warning modal #}
