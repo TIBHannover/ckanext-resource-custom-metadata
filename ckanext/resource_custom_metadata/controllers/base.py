@@ -15,7 +15,7 @@ class BaseController():
 
     def index(id):
         try:
-            package = toolkit.get_action('package_show')({}, {'name_or_id': id})
+            package = toolkit.get_action('package_show')({}, {'id': id})
         except toolkit.ObjectNotFound:
             return toolkit.abort(404, toolkit._('Dataset not found'))
         except toolkit.NotAuthorized:
@@ -41,20 +41,21 @@ class BaseController():
 
     def save_metadata():
         metadata_fields = ['material_combination', 'surface_preparation', 'atmosphere', 'data_type', 'analysis_method']
-        resource_count = request.form.get('resources_count')
         package_name = request.form.get('pkg_name')
-        
-        for field in metadata_fields:
-            custom_metadata_fields_length = request.form.get('processed_metadata_' + field, 0)
-            try:
-                total_fields = int(resource_count) + int(custom_metadata_fields_length)
-            except (TypeError, ValueError) as exc:
-                log.info('Invalid custom metadata form counts: %s', exc)
-                return toolkit.abort(400, toolkit._('Invalid custom metadata form data'))
 
-            for i in range(1, total_fields + 1):
-                resource_ids = request.form.getlist('custom_metadata_' + field + '_' + str(i))
-                field_text = request.form.get(field + '_' + str(i))
+        for field in metadata_fields:
+            input_prefix = field + '_'
+            field_inputs = (
+                key for key in request.form.keys()
+                if key.startswith(input_prefix)
+                and key[len(input_prefix):].isdigit()
+            )
+            for input_name in field_inputs:
+                index = input_name[len(input_prefix):]
+                resource_ids = request.form.getlist(
+                    'custom_metadata_' + field + '_' + index
+                )
+                field_text = request.form.get(input_name)
 
                 for res_id in resource_ids:
                     try:
