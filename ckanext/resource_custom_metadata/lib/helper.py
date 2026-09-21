@@ -1,13 +1,12 @@
 # encoding: utf-8
 
-from multiprocessing.connection import answer_challenge
-from os import stat
+import os.path
+
 import ckan.plugins.toolkit as toolkit
 import clevercsv
 import pandas as pd
 
 
-RESOURCE_DIR = toolkit.config['ckan.storage_path'] + '/resources/'
 STANDARD_HEADERS_V1 = ['X-Kategorie', 'Y-Kategorie', 'Datentyp', 'Werkstoff-1', 'Werkstoff-2', 'Atmosphaere', 'Vorbehandlung']
 STANDARD_HEADERS_V2 = ['X-Category', 'Y-Category', 'Measurement/Analysis Method', 'Material or Material Combination', 'Atmosphere', 'Data type (mechanical, chemical ...)', 'Surface Preparation']
 
@@ -15,8 +14,8 @@ STANDARD_HEADERS_V2 = ['X-Category', 'Y-Category', 'Measurement/Analysis Method'
 class Helper():
 
     def is_plugin_enabled(plugin_name):
-        plugins = toolkit.config.get("ckan.plugins")
-        if plugin_name in plugins:
+        plugins = toolkit.config.get("ckan.plugins", "")
+        if plugin_name in plugins.split():
             return True
         return False
     
@@ -34,9 +33,10 @@ class Helper():
         if answer:
             return [True, "v1"]
                 
+        if not df_columns:
+            return [False, ""]
+
         for col in df_columns:
-            print(col)
-            print(STANDARD_HEADERS_V2)
             if "Data type" in col:
                 if "Data type (mechanical, chemical " not in col:
                     return [False, ""]
@@ -57,13 +57,30 @@ class Helper():
                     if len(list(dataframe[col])) < 1:
                         return ''
                     
-                    return list(dataframe[col])[0]
+                    value = list(dataframe[col])[0]
+                    return '' if pd.isna(value) else value
 
 
         if len(list(dataframe[column_title])) < 1:
             return ''
         
-        return list(dataframe[column_title])[0]
+        value = list(dataframe[column_title])[0]
+        return '' if pd.isna(value) else value
+
+
+    @staticmethod
+    def resource_file_path(resource_id):
+        storage_path = toolkit.config.get('ckan.storage_path')
+        if not storage_path:
+            raise RuntimeError('ckan.storage_path is not configured')
+
+        return os.path.join(
+            storage_path,
+            'resources',
+            resource_id[0:3],
+            resource_id[3:6],
+            resource_id[6:],
+        )
 
 
     @staticmethod
@@ -78,9 +95,9 @@ class Helper():
                 - a python dataframe
         '''
 
-        file_path = RESOURCE_DIR + resource_id[0:3] + '/' + resource_id[3:6] + '/' + resource_id[6:]
-        df = clevercsv.read_dataframe(file_path)
-        df = df.fillna(0)
+        file_path = Helper.resource_file_path(resource_id)
+        df = clevercsv.read_dataframe(file_path, encoding='utf-8')
+        df = df.fillna('')
 
         return df
 
@@ -98,7 +115,7 @@ class Helper():
         '''
 
         result_df = {}
-        file_path = RESOURCE_DIR + resource_id[0:3] + '/' + resource_id[3:6] + '/' + resource_id[6:]
+        file_path = Helper.resource_file_path(resource_id)
         data_sheets = pd.read_excel(file_path, sheet_name=None, header=None)
         for sheet, data_f in data_sheets.items():
             temp_df = data_f.dropna(how='all').dropna(how='all', axis=1)
@@ -124,13 +141,13 @@ class Helper():
         format = ''
         name = ''
         if isinstance(resource, dict):
-            format = resource['format']
-            name = resource['name']
+            format = resource.get('format') or ''
+            name = resource.get('name') or resource.get('url') or ''
         else:
-            format = resource.format
-            name = resource.name
+            format = resource.format or ''
+            name = resource.name or ''
         
-        return (format in ['CSV']) or ('.csv' in name)
+        return (format.upper() in ['CSV']) or name.lower().endswith('.csv')
 
     
     @staticmethod
@@ -148,10 +165,10 @@ class Helper():
         format = ''
         name = ''
         if isinstance(resource, dict):
-            format = resource['format']
-            name = resource['name']
+            format = resource.get('format') or ''
+            name = resource.get('name') or resource.get('url') or ''
         else:
-            format = resource.format
-            name = resource.name
+            format = resource.format or ''
+            name = resource.name or ''
         
-        return (format in ['XLSX']) or ('.xlsx' in name)
+        return (format.upper() in ['XLSX']) or name.lower().endswith('.xlsx')
