@@ -9,7 +9,8 @@ Compatibility with core CKAN versions:
 
 | CKAN version    | Compatible?   |
 | --------------- | ------------- |
-|  2.10 | Yes    |
+|  2.10 | Yes, tested in Docker with Python 3.10 |
+|  2.11 | Yes, tested in Docker with Python 3.10 |
 |  2.9 | No |
 | earlier | No |           |
 
@@ -42,9 +43,12 @@ To install ckanext-resource-custom-metadata:
 
 ## Tests
 
-To run the tests, do:
+Install the development requirements and run the tests in a CKAN environment:
 
     pytest --ckan-ini=test.ini --cov=ckanext.resource_custom_metadata --disable-warnings ckanext/resource_custom_metadata
+
+The GitHub Actions matrix and `docker-compose.ci.yml` run the same suite against
+CKAN 2.10 and 2.11.
 
 
 
