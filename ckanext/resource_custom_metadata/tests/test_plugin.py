@@ -112,6 +112,20 @@ def test_save_metadata_rejects_invalid_form_data(app, with_plugins):
     assert response.status_code == 400
 
 
+@pytest.mark.parametrize(
+    ('configured_plugins', 'expected'),
+    [
+        ('resource_custom_metadata organization_group', True),
+        (['resource_custom_metadata', 'organization_group'], True),
+        (['resource_custom_metadata'], False),
+    ],
+)
+def test_is_plugin_enabled_accepts_string_and_list_config(monkeypatch, configured_plugins, expected):
+    monkeypatch.setitem(toolkit.config, 'ckan.plugins', configured_plugins)
+
+    assert Helper.is_plugin_enabled('organization_group') is expected
+
+
 def test_csv_v1_annotation_metadata_is_extracted(tmp_path, monkeypatch):
     write_resource_file(tmp_path, monkeypatch, CSV_V1)
     resource = {'id': RESOURCE_ID, 'url_type': 'upload', 'format': 'CSV', 'name': 'data.csv'}
@@ -245,6 +259,12 @@ def test_legacy_resource_hook_methods_are_not_defined_on_plugin():
 
     for hook in legacy_hooks:
         assert hook not in ResourceCustomMetadataPlugin.__dict__
+
+
+def test_before_resource_show_returns_resource_unchanged():
+    resource = {'id': RESOURCE_ID}
+
+    assert ResourceCustomMetadataPlugin().before_resource_show(resource) is resource
 
 
 @pytest.mark.skipif(parse_version(ckan.__version__) < parse_version('2.10'), reason='CKAN 2.10 resource hooks are required')

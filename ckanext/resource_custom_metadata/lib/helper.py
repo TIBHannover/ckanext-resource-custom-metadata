@@ -13,11 +13,12 @@ STANDARD_HEADERS_V2 = ['X-Category', 'Y-Category', 'Measurement/Analysis Method'
 
 class Helper():
 
+    @staticmethod
     def is_plugin_enabled(plugin_name):
-        plugins = toolkit.config.get("ckan.plugins", "")
-        if plugin_name in plugins.split():
-            return True
-        return False
+        configured_plugins = toolkit.config.get("ckan.plugins", [])
+        if isinstance(configured_plugins, str):
+            configured_plugins = configured_plugins.split()
+        return plugin_name in configured_plugins
     
 
     @staticmethod

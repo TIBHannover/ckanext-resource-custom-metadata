@@ -42,6 +42,8 @@ class BaseController():
     def save_metadata():
         metadata_fields = ['material_combination', 'surface_preparation', 'atmosphere', 'data_type', 'analysis_method']
         package_name = request.form.get('pkg_name')
+        if not package_name:
+            return toolkit.abort(400, toolkit._('Missing dataset identifier'))
 
         for field in metadata_fields:
             input_prefix = field + '_'
