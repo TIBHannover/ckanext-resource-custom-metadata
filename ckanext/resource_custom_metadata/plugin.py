@@ -110,7 +110,7 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
         pass
 
     def before_resource_show(self, resource_dict):
-        pass
+        return resource_dict
 
     def _process_and_persist_resource_metadata(self, context, resource):
         if context.get('resource_custom_metadata_skip_automation'):
