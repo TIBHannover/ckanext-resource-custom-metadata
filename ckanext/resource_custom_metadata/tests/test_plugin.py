@@ -5,8 +5,10 @@ import io
 from packaging.version import parse as parse_version
 
 import ckan
+import ckan.lib.helpers as h
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
+from bs4 import BeautifulSoup
 from ckan.tests import factories, helpers
 from flask import Flask
 import pandas as pd
@@ -69,6 +71,21 @@ def write_resource_file(tmp_path, monkeypatch, content, suffix='.csv'):
     return path
 
 
+@pytest.fixture
+def csrf_enforced_app(app, with_plugins, monkeypatch):
+    flask_app = app.flask_app
+    csrf = flask_app.extensions['csrf']
+    blueprint = flask_app.blueprints['resource_custom_metadata']
+    monkeypatch.setitem(flask_app.config, 'WTF_CSRF_ENABLED', True)
+    monkeypatch.setitem(flask_app.config, 'WTF_CSRF_CHECK_DEFAULT', True)
+    monkeypatch.setitem(h.helper_functions, 'cancel_dataset_is_enabled', lambda: False)
+    hooks = flask_app.before_request_funcs.setdefault(blueprint.name, [])
+    protect = csrf.protect
+    hooks.insert(0, protect)
+    yield app
+    hooks.remove(protect)
+
+
 @pytest.mark.ckan_config('ckan.plugins', 'resource_custom_metadata')
 def test_plugin_loads(with_plugins):
     assert plugins.plugin_loaded('resource_custom_metadata')
@@ -103,6 +120,77 @@ def test_blueprint_index_returns_404_for_missing_dataset(app, with_plugins):
     response = app.get('/resource_custom_metadata/index/missing-dataset')
 
     assert response.status_code == 404
+
+
+@pytest.mark.ckan_config('ckan.plugins', 'resource_custom_metadata')
+def test_metadata_form_contains_csrf_token(csrf_enforced_app, clean_db):
+    dataset = factories.Dataset()
+
+    response = csrf_enforced_app.get(
+        '/resource_custom_metadata/index/{}'.format(dataset['name'])
+    )
+
+    assert response.status_code == 200
+    document = BeautifulSoup(response.get_data(as_text=True), 'html.parser')
+    form = document.select_one('#resource-custom-metadata-form')
+    csrf_input = form.select_one('input[name="_csrf_token"]')
+    assert csrf_input is not None
+    assert csrf_input.attrs['value']
+
+
+@pytest.mark.ckan_config('ckan.plugins', 'resource_custom_metadata')
+def test_save_metadata_requires_csrf_token(csrf_enforced_app, clean_db):
+    dataset = factories.Dataset()
+    client = csrf_enforced_app.test_client()
+
+    response = client.post(
+        '/resource_custom_metadata/save_metadata',
+        data={'pkg_name': dataset['name']},
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 400
+    assert 'The CSRF token is missing.' in response.get_data(as_text=True)
+
+
+@pytest.mark.ckan_config('ckan.plugins', 'resource_custom_metadata')
+def test_save_metadata_accepts_rendered_csrf_token(
+    csrf_enforced_app, clean_db, monkeypatch
+):
+    dataset = factories.Dataset()
+    client = csrf_enforced_app.test_client()
+    form_response = client.get(
+        '/resource_custom_metadata/index/{}'.format(dataset['name'])
+    )
+    document = BeautifulSoup(form_response.get_data(as_text=True), 'html.parser')
+    csrf_input = document.select_one('input[name="_csrf_token"]')
+    updated_resources = []
+
+    def get_action(name):
+        if name == 'resource_show':
+            return lambda context, data_dict: {'id': data_dict['id']}
+        if name == 'resource_update':
+            return lambda context, data_dict: updated_resources.append(data_dict)
+        raise AssertionError('Unexpected action: {}'.format(name))
+
+    monkeypatch.setattr(toolkit, 'get_action', get_action)
+
+    response = client.post(
+        '/resource_custom_metadata/save_metadata',
+        data={
+            'pkg_name': dataset['name'],
+            '_csrf_token': csrf_input.attrs['value'],
+            'material_combination_1': 'Steel, Aluminum',
+            'custom_metadata_material_combination_1': RESOURCE_ID,
+        },
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 302
+    assert response.location.endswith('/dataset/{}'.format(dataset['name']))
+    assert updated_resources == [
+        {'id': RESOURCE_ID, 'material_combination': 'Steel, Aluminum'}
+    ]
 
 
 @pytest.mark.ckan_config('ckan.plugins', 'resource_custom_metadata')
