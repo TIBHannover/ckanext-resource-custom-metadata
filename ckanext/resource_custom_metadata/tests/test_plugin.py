@@ -2,6 +2,7 @@
 
 import csv
 import io
+from pathlib import Path
 from packaging.version import parse as parse_version
 
 import ckan
@@ -22,6 +23,7 @@ from ckanext.resource_custom_metadata.plugin import (
 
 
 RESOURCE_ID = 'abcdef1234567890'
+EXTENSION_ROOT = Path(__file__).parents[1]
 
 
 def csv_text(headers, row):
@@ -136,6 +138,58 @@ def test_metadata_form_contains_csrf_token(csrf_enforced_app, clean_db):
     csrf_input = form.select_one('input[name="_csrf_token"]')
     assert csrf_input is not None
     assert csrf_input.attrs['value']
+
+
+@pytest.mark.ckan_config('ckan.plugins', 'resource_custom_metadata')
+def test_resource_selection_modal_uses_ckan_211_contract(
+    csrf_enforced_app, clean_db
+):
+    dataset = factories.Dataset(
+        resources=[{'url': 'https://example.test/data.csv', 'name': 'data.csv'}]
+    )
+    resource = dataset['resources'][0]
+
+    response = csrf_enforced_app.get(
+        '/resource_custom_metadata/index/{}'.format(dataset['name'])
+    )
+
+    assert response.status_code == 200
+    document = BeautifulSoup(response.get_data(as_text=True), 'html.parser')
+    button = document.find(
+        'button', string=lambda text: text and 'Select data resource' in text
+    )
+    assert button is not None
+    assert button['data-bs-toggle'] == 'modal'
+    modal = document.select_one(button['data-bs-target'])
+    assert modal is not None
+    assert modal.select_one(
+        'input.resource-box[value="{}"]'.format(resource['id'])
+    )
+    assert document.select_one('input[name="_csrf_token"]') is not None
+
+    add_view = (EXTENSION_ROOT / 'templates/add_view.html').read_text()
+    javascript = (EXTENSION_ROOT / 'public/statics/add.js').read_text()
+    webassets = (EXTENSION_ROOT / 'public/statics/webassets.yml').read_text()
+    assert "{% asset 'ckanext-resource-custom-metadata/add-js' %}" in add_view
+    assert 'bootstrap.Modal.getOrCreateInstance' in javascript
+    assert '.modal(' not in javascript
+    assert 'vendor/bootstrap' in webassets
+    assert 'vendor/select2' not in webassets
+
+
+@pytest.mark.ckan_config('ckan.plugins', 'resource_custom_metadata')
+@pytest.mark.usefixtures('with_plugins')
+def test_metadata_webassets_include_without_unknown_assets(app, caplog):
+    import logging
+
+    from ckan.lib.webassets_tools import include_asset
+
+    caplog.set_level(logging.ERROR, logger='ckan.lib.webassets_tools')
+    with app.flask_app.test_request_context('/'):
+        include_asset('ckanext-resource-custom-metadata/add-js')
+        include_asset('ckanext-resource-custom-metadata/field-js')
+
+    assert 'Trying to include unknown asset' not in caplog.text
 
 
 @pytest.mark.ckan_config('ckan.plugins', 'resource_custom_metadata')
