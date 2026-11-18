@@ -12,10 +12,16 @@ import ckan.plugins.toolkit as toolkit
 from bs4 import BeautifulSoup
 from ckan.tests import factories, helpers
 from flask import Flask
+from openpyxl import Workbook
 import pandas as pd
 import pytest
+from zipfile import BadZipFile
 
-from ckanext.resource_custom_metadata.lib.helper import Helper
+from ckanext.resource_custom_metadata.lib.helper import (
+    Helper,
+    STANDARD_HEADERS_V1,
+    STANDARD_HEADERS_V2,
+)
 from ckanext.resource_custom_metadata.plugin import (
     CUSTOM_RESOURCE_FIELDS,
     ResourceCustomMetadataPlugin,
@@ -31,6 +37,36 @@ def csv_text(headers, row):
     writer = csv.writer(output)
     writer.writerow(headers)
     writer.writerow(row)
+    return output.getvalue()
+
+
+def xlsx_bytes(rows):
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        pd.DataFrame(rows).to_excel(writer, index=False, header=False)
+    return output.getvalue()
+
+
+def xlsx_sheets_bytes(sheets):
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        for sheet_name, rows in sheets.items():
+            pd.DataFrame(rows).to_excel(
+                writer, sheet_name=sheet_name, index=False, header=False
+            )
+    return output.getvalue()
+
+
+def merged_header_xlsx_bytes():
+    output = io.BytesIO()
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = 'Merged headers'
+    worksheet.append(['Experimental results', None, None])
+    worksheet.merge_cells('A1:C1')
+    worksheet.append(['Time', 'Force', 'Temperature'])
+    worksheet.append([0, 10, 20])
+    workbook.save(output)
     return output.getvalue()
 
 
@@ -66,8 +102,11 @@ def write_resource_file(tmp_path, monkeypatch, content, suffix='.csv'):
     path = tmp_path / 'resources' / RESOURCE_ID[0:3] / RESOURCE_ID[3:6] / RESOURCE_ID[6:]
     path.parent.mkdir(parents=True)
     if suffix == '.xlsx':
-        with pd.ExcelWriter(str(path), engine='openpyxl') as writer:
-            content.to_excel(writer, index=False, header=False)
+        if isinstance(content, bytes):
+            path.write_bytes(content)
+        else:
+            with pd.ExcelWriter(str(path), engine='openpyxl') as writer:
+                content.to_excel(writer, index=False, header=False)
     else:
         path.write_text(content, encoding='utf-8')
     return path
@@ -268,6 +307,45 @@ def test_is_plugin_enabled_accepts_string_and_list_config(monkeypatch, configure
     assert Helper.is_plugin_enabled('organization_group') is expected
 
 
+@pytest.mark.parametrize(
+    ('headers', 'expected'),
+    [
+        (STANDARD_HEADERS_V1, [True, 'v1']),
+        (STANDARD_HEADERS_V2, [True, 'v2']),
+        ([1, 2], [False, '']),
+        ([1.0, 2.5], [False, '']),
+        (STANDARD_HEADERS_V2[:-1] + [7], [False, '']),
+        ([''], [False, '']),
+        (['   '], [False, '']),
+        ([None], [False, '']),
+        ([float('nan')], [False, '']),
+        (['unrelated', 'spreadsheet', 'headers'], [False, '']),
+    ],
+)
+def test_is_possible_to_automate_handles_mixed_column_label_types(headers, expected):
+    dataframe = pd.DataFrame(columns=headers)
+
+    assert Helper.is_possible_to_automate(dataframe) == expected
+
+
+def test_is_possible_to_automate_trims_string_headers_for_metadata_lookup():
+    dataframe = pd.DataFrame(
+        [['time', 'current', 'SEM', 'Titanium', 'Vacuum', 'mechanical', 'Etched']],
+        columns=['  {}  '.format(header) for header in STANDARD_HEADERS_V2],
+    )
+
+    assert Helper.is_possible_to_automate(dataframe) == [True, 'v2']
+    assert list(dataframe.columns) == STANDARD_HEADERS_V2
+    assert ResourceCustomMetadataPlugin()._metadata_from_dataframe(dataframe) == {
+        'material_combination': 'Titanium',
+        'atmosphere': 'Vacuum',
+        'data_type': 'mechanical',
+        'surface_preparation': 'Etched',
+        'analysis_method': 'SEM',
+        'is_automated_processed': True,
+    }
+
+
 def test_csv_v1_annotation_metadata_is_extracted(tmp_path, monkeypatch):
     write_resource_file(tmp_path, monkeypatch, CSV_V1)
     resource = {'id': RESOURCE_ID, 'url_type': 'upload', 'format': 'CSV', 'name': 'data.csv'}
@@ -322,6 +400,85 @@ def test_xlsx_annotation_metadata_is_extracted(tmp_path, monkeypatch):
     assert metadata['is_automated_processed'] is True
 
 
+def test_xlsx_v1_annotation_metadata_is_extracted(tmp_path, monkeypatch):
+    write_resource_file(
+        tmp_path,
+        monkeypatch,
+        xlsx_bytes(
+            [
+                STANDARD_HEADERS_V1,
+                ['load', 'elongation', 'mechanical', 'Steel', 'Aluminum', 'Air', 'Polished'],
+            ]
+        ),
+        suffix='.xlsx',
+    )
+    resource = {'id': RESOURCE_ID, 'url_type': 'upload', 'format': 'XLSX', 'name': 'v1.xlsx'}
+
+    metadata = ResourceCustomMetadataPlugin()._extract_metadata_from_resource(resource)
+
+    assert metadata['material_combination'] == 'Steel, Aluminum'
+    assert metadata['data_type'] == 'mechanical'
+    assert metadata['is_automated_processed'] is True
+
+
+@pytest.mark.parametrize(
+    'workbook_content',
+    [
+        xlsx_bytes(
+            [
+                ['Experiment', 'Experiment', 'Conditions'],
+                ['Time', 'Force', 'Temperature'],
+                [0, 10, 20],
+            ]
+        ),
+        merged_header_xlsx_bytes(),
+        xlsx_sheets_bytes(
+            {
+                'Experiment A': [['Time', 'Force'], [0, 10]],
+                'Experiment B': [['Cycle', 'Voltage'], [1, 2.5]],
+            }
+        ),
+    ],
+)
+def test_arbitrary_xlsx_structures_are_left_unautomated(
+    tmp_path, monkeypatch, workbook_content
+):
+    path = write_resource_file(
+        tmp_path, monkeypatch, workbook_content, suffix='.xlsx'
+    )
+    original_content = path.read_bytes()
+    resource = {'id': RESOURCE_ID, 'url_type': 'upload', 'format': 'XLSX', 'name': 'research.xlsx'}
+
+    metadata = ResourceCustomMetadataPlugin()._extract_metadata_from_resource(resource)
+
+    assert metadata == {}
+    assert path.read_bytes() == original_content
+
+
+def test_multiple_worksheets_process_only_a_valid_template(tmp_path, monkeypatch):
+    workbook_content = xlsx_sheets_bytes(
+        {
+            'Raw experiment': [
+                ['Experiment', 'Conditions'],
+                ['Time', 'Force'],
+                [0, 10],
+            ],
+            'Metadata V2': [
+                STANDARD_HEADERS_V2,
+                ['time', 'current', 'SEM', 'Titanium', 'Vacuum', 'mechanical', 'Etched'],
+            ],
+        }
+    )
+    write_resource_file(tmp_path, monkeypatch, workbook_content, suffix='.xlsx')
+    resource = {'id': RESOURCE_ID, 'url_type': 'upload', 'format': 'XLSX', 'name': 'multi-sheet.xlsx'}
+
+    metadata = ResourceCustomMetadataPlugin()._extract_metadata_from_resource(resource)
+
+    assert metadata['material_combination'] == 'Titanium'
+    assert metadata['analysis_method'] == 'SEM'
+    assert metadata['is_automated_processed'] is True
+
+
 @pytest.mark.parametrize(
     'resource',
     [
@@ -338,6 +495,34 @@ def test_malformed_uploaded_resource_is_unchanged(monkeypatch):
     monkeypatch.setattr(Helper, 'csv_to_dataframe', lambda resource_id: (_ for _ in ()).throw(ValueError('bad csv')))
 
     assert ResourceCustomMetadataPlugin()._extract_metadata_from_resource(resource) == {}
+
+
+def test_invalid_xlsx_archive_is_unchanged(monkeypatch):
+    resource = {'id': RESOURCE_ID, 'url_type': 'upload', 'format': 'XLSX', 'name': 'data.xlsx'}
+    monkeypatch.setattr(Helper, 'xlsx_to_dataframe', lambda resource_id: (_ for _ in ()).throw(BadZipFile('bad xlsx')))
+
+    assert ResourceCustomMetadataPlugin()._extract_metadata_from_resource(resource) == {}
+
+
+def test_after_resource_create_ignores_non_automatable_numeric_headers(monkeypatch):
+    plugin = ResourceCustomMetadataPlugin()
+    resource = {'id': RESOURCE_ID, 'url_type': 'upload', 'format': 'XLSX', 'name': 'data.xlsx'}
+    dataframe = pd.DataFrame([['value', 'other']], columns=[1.0, 2])
+    monkeypatch.setattr(Helper, 'xlsx_to_dataframe', lambda resource_id: {'Sheet1': dataframe})
+    monkeypatch.setattr(
+        toolkit,
+        'get_action',
+        lambda name: pytest.fail('unsupported spreadsheets must not be patched'),
+    )
+
+    plugin.after_resource_create({'user': 'tester'}, resource)
+
+    assert resource == {
+        'id': RESOURCE_ID,
+        'url_type': 'upload',
+        'format': 'XLSX',
+        'name': 'data.xlsx',
+    }
 
 
 def test_programming_errors_are_not_suppressed(monkeypatch):
@@ -432,3 +617,24 @@ def test_generated_custom_metadata_survives_resource_create_and_show(clean_db, c
     assert shown['surface_preparation'] == 'Ground'
     assert shown['analysis_method'] == 'EIS'
     assert shown['is_automated_processed'] is True
+
+
+@pytest.mark.skipif(parse_version(ckan.__version__) < parse_version('2.10'), reason='CKAN 2.10 resource hooks are required')
+@pytest.mark.ckan_config('ckan.plugins', 'resource_custom_metadata')
+@pytest.mark.ckan_config('ckan.uploads_enabled', True)
+def test_numeric_xlsx_headers_do_not_break_resource_create(clean_db, create_with_upload, with_plugins):
+    dataset = factories.Dataset()
+
+    resource = create_with_upload(
+        xlsx_bytes([[1.0, 2], ['value', 'other']]),
+        'numeric-headers.xlsx',
+        context={'ignore_auth': True},
+        package_id=dataset['id'],
+        url='upload',
+        name='numeric-headers.xlsx',
+        format='XLSX',
+    )
+    shown = helpers.call_action('resource_show', id=resource['id'])
+
+    assert shown['id'] == resource['id']
+    assert shown.get('is_automated_processed') is not True

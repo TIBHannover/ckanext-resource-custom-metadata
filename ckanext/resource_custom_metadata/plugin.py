@@ -1,4 +1,5 @@
 import logging
+from zipfile import BadZipFile
 
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
@@ -149,7 +150,15 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
                     if metadata:
                         return metadata
                 return {}
-        except (FileNotFoundError, OSError, UnicodeDecodeError, ValueError, KeyError, pd.errors.ParserError) as exc:
+        except (
+            BadZipFile,
+            FileNotFoundError,
+            OSError,
+            UnicodeDecodeError,
+            ValueError,
+            KeyError,
+            pd.errors.ParserError,
+        ) as exc:
             log.info(
                 'Could not automate custom metadata for resource %s: %s',
                 resource.get('id'),

@@ -23,8 +23,22 @@ class Helper():
 
     @staticmethod
     def is_possible_to_automate(resource_df):
-        df_columns = resource_df.columns
-        df_columns = [i.strip() for i in df_columns]
+        df_columns = []
+        for column in resource_df.columns:
+            # Spreadsheet header cells are not guaranteed to contain text.
+            # Numeric, empty, and missing labels cannot describe the supported
+            # metadata schema and must make the sheet non-automatable.
+            if not isinstance(column, str):
+                return [False, ""]
+            column = column.strip()
+            if not column:
+                return [False, ""]
+            df_columns.append(column)
+
+        # The matching logic has always ignored surrounding whitespace. Keep
+        # the normalized labels on the dataframe so metadata lookup uses the
+        # same names that were validated here.
+        resource_df.columns = df_columns
         answer = True        
         for annot in STANDARD_HEADERS_V1:
             if annot not in df_columns:
