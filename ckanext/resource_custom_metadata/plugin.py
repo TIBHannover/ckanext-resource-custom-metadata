@@ -149,6 +149,12 @@ class ResourceCustomMetadataPlugin(plugins.SingletonPlugin, toolkit.DefaultDatas
                     metadata = self._metadata_from_dataframe(sheet_dataframe)
                     if metadata:
                         return metadata
+                    log.info(
+                        'Skipping automatic custom metadata for unsupported '
+                        'worksheet %s in resource %s',
+                        sheet_name,
+                        resource.get('id'),
+                    )
                 return {}
         except (
             BadZipFile,

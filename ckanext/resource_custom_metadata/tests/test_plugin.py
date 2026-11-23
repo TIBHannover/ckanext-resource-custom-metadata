@@ -441,8 +441,9 @@ def test_xlsx_v1_annotation_metadata_is_extracted(tmp_path, monkeypatch):
     ],
 )
 def test_arbitrary_xlsx_structures_are_left_unautomated(
-    tmp_path, monkeypatch, workbook_content
+    tmp_path, monkeypatch, workbook_content, caplog
 ):
+    caplog.set_level('INFO', logger='ckanext.resource_custom_metadata.plugin')
     path = write_resource_file(
         tmp_path, monkeypatch, workbook_content, suffix='.xlsx'
     )
@@ -453,6 +454,34 @@ def test_arbitrary_xlsx_structures_are_left_unautomated(
 
     assert metadata == {}
     assert path.read_bytes() == original_content
+    assert 'Skipping automatic custom metadata for unsupported worksheet' in caplog.text
+
+
+@pytest.mark.parametrize(
+    'headers',
+    [
+        [None, 'Force'],
+        [float('nan'), 'Force'],
+        [1.0, 2],
+    ],
+)
+def test_xlsx_missing_numeric_and_nan_headers_are_left_unautomated(
+    tmp_path, monkeypatch, caplog, headers
+):
+    caplog.set_level('INFO', logger='ckanext.resource_custom_metadata.plugin')
+    workbook_content = xlsx_bytes([headers, ['value', 'other']])
+    write_resource_file(tmp_path, monkeypatch, workbook_content, suffix='.xlsx')
+    resource = {
+        'id': RESOURCE_ID,
+        'url_type': 'upload',
+        'format': 'XLSX',
+        'name': 'unsupported-headers.xlsx',
+    }
+
+    metadata = ResourceCustomMetadataPlugin()._extract_metadata_from_resource(resource)
+
+    assert metadata == {}
+    assert 'Skipping automatic custom metadata for unsupported worksheet' in caplog.text
 
 
 def test_multiple_worksheets_process_only_a_valid_template(tmp_path, monkeypatch):
